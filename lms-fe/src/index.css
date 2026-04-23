@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+
+/* Autofill icon password Chrome & Edge */
+input::-ms-reveal,
+input::-ms-clear,
+input[type="password"]::-webkit-credentials-auto-fill-button,
+input[type="password"]::-ms-reveal {
+  display: none !important;
+  visibility: hidden;
+}
+
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 20px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #ffffff;
+  border-radius: 35px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #c1c1c1;
+  border-radius: 20px;
+  border: 6px solid #ffffff;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #a0a0a0;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;  
+  scrollbar-width: none;   
+}
+
+.container {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+@media (min-width: 40rem) {
+    .container {
+        max-width: 40rem;
+    }
+}
+
+@media (min-width: 48rem) {
+    .container {
+        max-width: 48rem;
+    }
+}
+
+@media (min-width: 64rem) {
+    .container {
+        max-width: 64rem;
+    }
+}
+
+@media (min-width: 80rem) {
+    .container {
+        max-width: 80rem;
+    }
+}
+/* @media (min-width: 96rem) {
+    .container {
+        max-width: 96rem;
+    }
+} */
+
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+}

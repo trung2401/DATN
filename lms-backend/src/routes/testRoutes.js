@@ -1,0 +1,35 @@
+const express = require('express');
+const router = express.Router();
+const testController = require('../controllers/testController');
+const { verifyToken, isTeacher } = require('../middlewares/authMiddleware');
+const upload = require('../middlewares/upload');
+
+router.get('/getAllTest', verifyToken, testController.getAllTest);
+router.get('/getTestByUserID/:userId', verifyToken, testController.getTestByUserID);
+router.get('/getTest', verifyToken, testController.getTest);
+router.get('/getTotalTestsCount', verifyToken, testController.getTotalTestsCount);
+//router.get('/getTotalUniqueTestsByUser/:userId', verifyToken, testController.getTotalAttemptsByUser);
+router.get('/getTotalAttemptsByUser/:userId', verifyToken, testController.getTotalAttemptsByUser);
+router.get('/getAverageTestScoreByUser/:userId', verifyToken, testController.getAverageTestScoreByUser);
+router.get('/getResultListByUser/:userId', verifyToken, testController.getResultListByUser);
+router.get('/getResultList', verifyToken, testController.getResultList);
+router.post('/files/upload/audio', verifyToken, isTeacher, upload.single('file'), testController.uploadAudio);
+router.post('/files/upload/image', verifyToken, isTeacher, upload.single('file'), testController.uploadImage);
+router.post('/add', verifyToken, isTeacher, testController.createTest);
+router.put('/:id', verifyToken, isTeacher, testController.updateTest);
+router.put('/:id/set-status', verifyToken, isTeacher, testController.setStatusTest);
+router.get('/:testId/groups', verifyToken, isTeacher, testController.getGroupsByPart);
+router.post('/:testId/groups', verifyToken, isTeacher, testController.createQuestionGroup);
+router.post('/:testId/questions/single', verifyToken, isTeacher, testController.addSingleQuestion);
+router.post('/:testId/groups/:dataQuestionId/questions', verifyToken, isTeacher, testController.addQuestionToGroup);
+router.get('/:testId/questions/manage', verifyToken, isTeacher, testController.getQuestionsByPartForManage);
+router.put('/:testId/questions/:questionId', verifyToken, isTeacher, testController.updateSingleQuestion);
+router.delete('/:testId/questions/:questionId', verifyToken, isTeacher, testController.deleteQuestion);
+router.put('/:testId/groups/:dataQuestionId', verifyToken, isTeacher, testController.updateQuestionGroup);
+router.delete('/:testId/groups/:dataQuestionId', verifyToken, isTeacher, testController.deleteQuestionGroup);
+router.get('/get/test/:testId', verifyToken, testController.getTestById);
+router.post('/:testId/start', verifyToken, testController.startTest);
+router.post('/submit', verifyToken, testController.submitTest);
+// Route lấy kết quả bài thi dựa trên ID lịch sử
+router.get('/result/:historyOfTestID', verifyToken, testController.getTestResult);
+module.exports = router;
