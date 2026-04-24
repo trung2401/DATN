@@ -80,14 +80,16 @@ export const fetchAllHistoryTests = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await getAllHistoryTest();
-      const historyTests = Array.isArray(response?.data)
-        ? response.data
-        : Array.isArray(response?.data?.data)
-          ? response.data.data
+      const payload = response?.data ?? response;
+      const historyTests = Array.isArray(payload)
+        ? payload
+        : Array.isArray(payload?.data)
+          ? payload.data
           : [];
 
       return historyTests.map((result) => ({
         idTestHistory: result.historyOfTestID,
+        testId: result.testId,
         testName: result.testName,
         userName: result.userName,
         score: result.scoreTotal,
@@ -107,11 +109,25 @@ export const fetchAllTests = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await getAllTest();
-      const tests = Array.isArray(response.data) ? response.data : [];
+      const payload = response?.data ?? response;
+      const tests = Array.isArray(payload)
+        ? payload
+        : Array.isArray(payload?.data)
+          ? payload.data
+          : [];
+
+      const normalizeTeacher = (teacher) => ({
+        teacherId: teacher?.userId ?? teacher?.UserID ?? teacher?.id ?? null,
+        teacherUserName: teacher?.userName ?? teacher?.UserName ?? null,
+        teacherName: teacher?.name ?? teacher?.Name ?? teacher?.userName ?? teacher?.UserName ?? "Không rõ",
+      });
+
       return tests.map((test) => ({
-        idTest: test.idTest,
-        testName: test.testName,
-        numberOfQuestion: parseInt(test.numberOfQuestion, 10),
+        idTest: test.idTest ?? test.testId ?? test.TestID,
+        testName: test.testName ?? test.TestName,
+        numberOfQuestion: Number.parseInt(test.numberOfQuestion ?? test.numberOfQuestions ?? 0, 10),
+        status: Number(test.status ?? 0),
+        ...normalizeTeacher(test.teacher ?? test.Teacher),
       }));
     } catch (error) {
       return rejectWithValue(

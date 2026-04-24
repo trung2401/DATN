@@ -1535,6 +1535,7 @@ const getResultList = async (req, res) => {
         const attempts = await sequelize.query(`
             SELECT
                 h.HistoryOfTestID AS historyOfTestID,
+                t.TestID AS testId,
                 h.Date AS dateTest,
                 t.TestName AS testName,
                 u.Name AS userName,
@@ -1547,7 +1548,7 @@ const getResultList = async (req, res) => {
             LEFT JOIN historyoftest_question hq
                 ON hq.HistoryoftestID = h.HistoryOfTestID
                 AND hq.QuestionID = q.QuestionID
-            GROUP BY h.HistoryOfTestID, h.Date, t.TestName, u.Name
+            GROUP BY h.HistoryOfTestID, t.TestID, h.Date, t.TestName, u.Name
             ORDER BY h.Date DESC, h.HistoryOfTestID DESC
         `, {
             type: QueryTypes.SELECT
@@ -1561,6 +1562,7 @@ const getResultList = async (req, res) => {
 
             return {
                 historyOfTestID: Number(attempt.historyOfTestID),
+                testId: Number(attempt.testId),
                 testName: attempt.testName,
                 userName: attempt.userName,
                 scoreTotal: listeningScore + readingScore,

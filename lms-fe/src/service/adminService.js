@@ -26,7 +26,7 @@ const getAllHistoryTest = () => {
 
 // Lấy thông tin bài test
 const getAllTest = () => {
-  const URL_BACKEND = "exam-service/getAllTest";
+  const URL_BACKEND = "test/getAllTest";
   return axios.get(URL_BACKEND);
 };
 

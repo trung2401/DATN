@@ -22,9 +22,9 @@ function App() {
     const normalizedStoredRole =
       role === "ADMIN" || role === "TEACHER" || role === "USER"
         ? role
-        : roleId === 1 || roleName.includes("ADMIN") || roleName.includes("QUAN TRI")
+        : roleId === 1 || roleName.includes("QUAN TRI VIEN")
           ? "ADMIN"
-          : roleId === 2 || roleName.includes("TEACHER") || roleName.includes("GIAO VIEN") || roleName.includes("GIANG VIEN")
+          : roleId === 2 || roleName.includes("GIAO VIEN")
             ? "TEACHER"
             : "USER";
 

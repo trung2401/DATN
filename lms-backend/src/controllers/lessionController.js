@@ -1,6 +1,8 @@
 const Lession = require('../models/Lession');
 const Part = require('../models/Part');
 const Course = require('../models/Course');
+const RegisterCourse = require('../models/RegisterCourse');
+const { Op, fn, col, where: sequelizeWhere } = require('sequelize');
 const { normalizeDataPath } = require('../utils/assetPath');
 
 const isTeacherUser = (user) => Number(user?.roleId) === 2 || String(user?.role || '').toLowerCase().includes('giáo viên') || String(user?.role || '').toLowerCase().includes('teacher');
@@ -18,20 +20,57 @@ const ensureTeacherOwnsCourse = async (courseId, user) => {
     return { course };
 };
 
-const serializeLession = (lession) => ({
+const serializeLession = (lession, includeProtectedContent = true) => ({
     lessionId: lession.lessionID,
     courseId: lession.CourseID,
     lessionName: lession.lessionname,
-    video: lession.Video,
+    video: includeProtectedContent ? lession.Video : null,
     orderNumber: lession.OrderNumber,
     partId: lession.PartID,
     listId: lession.ListID,
-    exercise: lession.Exercise,
+    exercise: includeProtectedContent ? lession.Exercise : null,
+    isLocked: !includeProtectedContent,
     part: lession.Part ? {
         partId: lession.Part.PartID,
         partName: lession.Part.PartName
     } : null
 });
+
+const getLatestRegistration = async ({ user, course }) => {
+    if (!user || !course) return null;
+
+    return RegisterCourse.findOne({
+        where: {
+            CourseID: course.CourseID,
+            UserID: user.id
+        },
+        order: [['RegisterCourseID', 'DESC']]
+    });
+};
+
+const hasFullLessonAccess = async ({ user, course }) => {
+    if (!user || !course) return false;
+
+    const roleId = Number(user.roleId);
+    if (roleId === 1) return true; // admin
+
+    if (roleId === 2 && Number(course.TeacherID) === Number(user.id)) {
+        return true; // teacher owns this course
+    }
+
+    // Student (hoặc token cũ thiếu roleId): chỉ cho phép nếu đã được xác nhận thanh toán
+    const registration = await RegisterCourse.findOne({
+        where: {
+            CourseID: course.CourseID,
+            UserID: user.id,
+            [Op.and]: [
+                sequelizeWhere(fn('LOWER', fn('TRIM', col('status'))), 'confirmed')
+            ]
+        }
+    });
+
+    return !!registration;
+};
 
 const getAllLessions = async (req, res) => {
     try {
@@ -45,20 +84,25 @@ const getAllLessions = async (req, res) => {
                 message: 'Thiếu courseId! Vui lòng chọn một khóa học để xem danh sách bài học.' 
             });
         }
+        const course = await Course.findByPk(courseId);
+        if (!course) {
+            return res.status(404).json({ success: false, message: 'Course not found!' });
+        }
+
         const where = { CourseID: courseId };
         if (partId) {
             where.PartID = partId;
         }
 
         if (req.user && isTeacherUser(req.user)) {
-            const course = await Course.findByPk(courseId);
-            if (!course) {
-                return res.status(404).json({ success: false, message: 'Course not found!' });
-            }
             if (Number(course.TeacherID) !== Number(req.user.id)) {
                 return res.status(403).json({ success: false, message: 'Bạn không có quyền xem khóa học này!' });
             }
         }
+
+        const canAccessContent = await hasFullLessonAccess({ user: req.user, course });
+        const latestRegistration = await getLatestRegistration({ user: req.user, course });
+        const registrationStatus = latestRegistration?.status ? String(latestRegistration.status).trim().toLowerCase() : null;
         
         const lessions = await Lession.findAll({
             where,
@@ -73,7 +117,9 @@ const getAllLessions = async (req, res) => {
         return res.json({
             success: true,
             count: lessions.length,
-            data: lessions.map(serializeLession)
+            canAccessContent,
+            registrationStatus,
+            data: lessions.map((item) => serializeLession(item, canAccessContent))
         });
     } catch (error) {
         return res.status(500).json({ error: error.message });

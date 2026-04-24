@@ -11,6 +11,7 @@ const VocabularyCard = ({
   onEdit,
   onDelete,
   onStudy,
+  readOnly = false,
 }) => {
   const statusStyles =
     status === "Đã học"
@@ -45,32 +46,36 @@ const VocabularyCard = ({
       )}
 
       <div className="flex items-center justify-between gap-4 mt-4">
-        <div className="flex items-start gap-2">
-          {/* Button edit  */}
-          <Button
-            variant="default"
-            text="Sửa"
-            size="sm"
-            icon={<FontAwesomeIcon icon="fa-solid fa-pen-to-square" />}
-            iconPosition="left"
-            textColor="text-gray-600"
-            border="border-2 border-gray-200"
-            onClick={onEdit}
-          />
+        {!readOnly ? (
+          <div className="flex items-start gap-2">
+            {/* Button edit  */}
+            <Button
+              variant="default"
+              text="Sửa"
+              size="sm"
+              icon={<FontAwesomeIcon icon="fa-solid fa-pen-to-square" />}
+              iconPosition="left"
+              textColor="text-gray-600"
+              border="border-2 border-gray-200"
+              onClick={onEdit}
+            />
 
-          {/* Button delete */}
-          <Button
-            variant="delete"
-            text="Xóa"
-            size="sm"
-            icon={<FontAwesomeIcon icon="fa-solid fa-trash" />}
-            iconPosition="left"
-            textColor="text-red-600"
-            border="border-2 border-red-600"
-            bg="bg-white"
-            onClick={onDelete}
-          />
-        </div>
+            {/* Button delete */}
+            <Button
+              variant="delete"
+              text="Xóa"
+              size="sm"
+              icon={<FontAwesomeIcon icon="fa-solid fa-trash" />}
+              iconPosition="left"
+              textColor="text-red-600"
+              border="border-2 border-red-600"
+              bg="bg-white"
+              onClick={onDelete}
+            />
+          </div>
+        ) : (
+          <div />
+        )}
 
         <div className="flex">
           {/* Button study */}

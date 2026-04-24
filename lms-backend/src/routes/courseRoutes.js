@@ -4,7 +4,7 @@ const courseController = require('../controllers/courseController');
 const { verifyToken, isAdmin } = require('../middlewares/authMiddleware');
 
 router.get('/getAllCourses', verifyToken, courseController.getAllCourses);
-router.get('/getAllCoursesByStudent', verifyToken, courseController.getAllCoursesByStudent);
+router.get('/getAllCoursesByStudent', courseController.getAllCoursesByStudent);
 router.get('/getStudentCountByCourse', verifyToken, isAdmin, courseController.getStudentCountByCourse);
 router.post('/add', verifyToken, isAdmin, courseController.createCourse);
 router.delete('/:id', verifyToken, isAdmin, courseController.deleteCourse);

@@ -50,9 +50,9 @@ const sectionData = {
           style={{ color: "#2C99E2" }}
         />
       ),
-      title: "Tra từ điển thông minh",
-      description: "Học từ vựng, phát âm và từ đồng nghĩa",
-      path: "/dictionary",
+      title: "Khóa học TOEIC thực chiến",
+      description: "Xem lộ trình, học phí và chọn khóa học phù hợp",
+      path: "/course",
     },
     {
       icon: (

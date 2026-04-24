@@ -1,5 +1,7 @@
 import Home from "../pages/Home";
-import Dictionary from "../pages/Dictionary";
+import Course from "../pages/Course";
+import VideoLession from "../pages/VideoLession";
+import CourseVocabulary from "../pages/CourseVocabulary";
 import Exam from "../pages/Exam";
 import Note from "../pages/Note";
 import Login from "../components/Login";
@@ -25,17 +27,40 @@ import ManageVocabulary from "../pages/Teacher/ManageVocabulary";
 import ForbiddenPage from "../components/ForbiddenPage";
 import PrivateRoute from "./PrivateRoute";
 import PublicRoute from "./PublicRoute";
+import RoleHomeRoute from "./RoleHomeRoute";
 
 const routes = [
   {
     layout: PublicLayout,
     children: [
-      { path: "/", component: <Home />, protected: false },
       {
-        path: "/dictionary",
+        path: "/",
+        component: (
+          <RoleHomeRoute>
+            <Home />
+          </RoleHomeRoute>
+        ),
+        protected: false,
+      },
+      {
+        path: "/course",
+        component: (
+          <Course />
+        ),
+        protected: false,
+      },
+      {
+        path: "/video-lession/:courseId/:lessonId",
+        component: (
+          <VideoLession />
+        ),
+        protected: false,
+      },
+      {
+        path: "/course/vocabulary-list/:listId",
         component: (
           <PrivateRoute>
-            <Dictionary />
+            <CourseVocabulary />
           </PrivateRoute>
         ),
         protected: true,

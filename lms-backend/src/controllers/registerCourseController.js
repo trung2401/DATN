@@ -41,6 +41,19 @@ const createRegisterCourse = async (req, res) => {
             return res.status(404).json({ message: 'Course not found!' });
         }
 
+        const existed = await RegisterCourse.findOne({
+            where: {
+                CourseID: courseId,
+                UserID: req.user.id,
+                status: ['pending', 'confirmed']
+            },
+            order: [['RegisterCourseID', 'DESC']]
+        });
+
+        if (existed) {
+            return res.status(409).json({ message: 'Bạn đã đăng ký khóa học này rồi!' });
+        }
+
         const finalTotalAmount = totalAmount ?? course.Price ?? 0;
         const salaryPercent = Number(course.percentSalary ?? 0);
         const totalAmountOfTeacher = Number(finalTotalAmount) * (salaryPercent / 100);

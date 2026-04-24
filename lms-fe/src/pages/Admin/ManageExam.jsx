@@ -1,43 +1,37 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  fetchAllHistoryTests,
-  fetchAllTests,
-  fetchDeleteTest,
-} from "../../redux/slice/adminSlice";
-import { getTestDetail } from "../../service/adminService";
+import { fetchAllHistoryTests, fetchAllTests } from "../../redux/slice/adminSlice";
 import Button from "../../components/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import SearchBar from "../../components/SearchBar";
-import DetailExamResult from "../../components/Admin/DetailExamResult";
-import AddOrEditExam from "../../components/Admin/AddOrEditExam";
-import ModalConfirm from "../../components/ConfirmModal";
 import Pagination from "../../components/Pagination";
 import { toast } from "react-toastify";
 
+const ITEMS_PER_PAGE = 5;
+
+const getTeacherDisplayName = (test) => test.teacherName || test.teacherUserName || "Không rõ";
+
+const getTeacherSortKey = (teacher) => {
+  const teacherId = teacher.teacherId ?? "";
+  const teacherName = teacher.teacherName || teacher.teacherUserName || "";
+  return `${String(teacherId)}-${teacherName}`;
+};
+
+const getStatusLabel = (status) => (Number(status) === 1 ? "Đã phát hành" : "Chưa phát hành");
+
+const getStatusClassName = (status) =>
+  Number(status) === 1
+    ? "bg-green-100 text-green-700"
+    : "bg-amber-100 text-amber-700";
+
 const ManageExam = () => {
   const dispatch = useDispatch();
-  const {
-    tests,
-    historyTests,
-    loadingTest,
-    loadingHistoryTest,
-    errorHistoryTest,
-    errorTest,
-  } = useSelector((state) => state.admin);
-  const [currentPageExams, setCurrentPageExams] = useState(1);
-  const [currentPageResults, setCurrentPageResults] = useState(1);
-  const [searchExamQuery, setSearchExamQuery] = useState("");
-  const [searchResultQuery, setSearchResultQuery] = useState("");
-  const [showDetailResult, setShowDetailResult] = useState(false);
-  const [showAddExam, setShowAddExam] = useState(false);
-  const [showEditExam, setShowEditExam] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-  const [selectedExam, setSelectedExam] = useState(null);
-  const [selectedResult, setSelectedResult] = useState(null);
-
-  const itemsPerPageExams = 5;
-  const itemsPerPageResults = 5;
+  const { tests, historyTests, loadingTest, loadingHistoryTest, errorHistoryTest, errorTest } = useSelector(
+    (state) => state.admin
+  );
+  const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [selectedTeacher, setSelectedTeacher] = useState(null);
 
   useEffect(() => {
     dispatch(fetchAllTests());
@@ -53,173 +47,155 @@ const ManageExam = () => {
     }
   }, [errorTest, errorHistoryTest]);
 
-  const filteredExams = tests.filter((exam) => {
-    const query = searchExamQuery.toLowerCase();
-    return (
-      exam.idTest?.toLowerCase().includes(query) ||
-      exam.testName?.toLowerCase().includes(query)
-    );
-  });
+  const groupedTeachers = useMemo(() => {
+    const attemptCountByTestId = historyTests.reduce((accumulator, item) => {
+      const testId = String(item.testId ?? "");
+      if (!testId) return accumulator;
+      accumulator.set(testId, (accumulator.get(testId) || 0) + 1);
+      return accumulator;
+    }, new Map());
 
-  const filteredResults = historyTests.filter((result) => {
-    const query = searchResultQuery.toLowerCase();
-    return (
-      result.idTestHistory?.toLowerCase().includes(query) ||
-      result.email?.toLowerCase().includes(query)
-    );
-  });
+    const teacherMap = new Map();
 
-  // Pagination for exams
-  const totalExams = filteredExams.length;
-  const totalExamPages = Math.ceil(totalExams / itemsPerPageExams);
-  const startIndexExams = (currentPageExams - 1) * itemsPerPageExams;
-  const endIndexExams = startIndexExams + itemsPerPageExams;
-  const currentExams = filteredExams.slice(startIndexExams, endIndexExams);
+    tests.forEach((test) => {
+      const teacherId = test.teacherId ?? "unknown";
+      const teacherKey = String(teacherId);
+      const teacherName = getTeacherDisplayName(test);
 
-  // Pagination for exam results
-  const totalResults = filteredResults.length;
-  const totalResultPages = Math.ceil(totalResults / itemsPerPageResults);
-  const startIndexResults = (currentPageResults - 1) * itemsPerPageResults;
-  const endIndexResults = startIndexResults + itemsPerPageResults;
-  const currentResults = filteredResults.slice(
-    startIndexResults,
-    endIndexResults
-  );
+      if (!teacherMap.has(teacherKey)) {
+        teacherMap.set(teacherKey, {
+          teacherId,
+          teacherName,
+          teacherUserName: test.teacherUserName || "",
+          tests: [],
+        });
+      }
 
-  const handleCancel = () => {
-    setShowModal(false);
-  };
-
-  const handleDelete = async (exam) => {
-    if (!exam.idTest) {
-      toast.error("Không tìm thấy ID đề thi");
-      return;
-    }
-    try {
-      await dispatch(fetchDeleteTest({ testId: exam.idTest})).unwrap();
-      toast.success(`Xóa đề thi thành công!`);
-      dispatch(fetchAllTests());
-      setSelectedExam(null);
-      setShowModal(false);
-    } catch (error) {
-      toast.error(error || "Lỗi khi xóa đề thi");
-      return;
-    }
-  };
-
-const handleEditExam = async (examId) => {
-  try {
-    const response = await getTestDetail({ testId: examId }); 
-    const examData = response.data;
-    console.log("Exam data for editing:", examData);
-    setSelectedExam({
-      ...examData,
-      testId: examData.testId,
-      parts: examData.parts || [],
-      questions: examData.questions || [],
+      teacherMap.get(teacherKey).tests.push({
+        idTest: test.idTest,
+        testName: test.testName,
+        status: test.status,
+        numberOfQuestion: test.numberOfQuestion,
+        attemptCount: attemptCountByTestId.get(String(test.idTest)) || 0,
+      });
     });
-    setShowEditExam(true);
-  } catch (error) {
-    toast.error(error || "Không tìm thấy đề thi");
-  }
-};
+
+    return Array.from(teacherMap.values())
+      .map((teacher) => {
+        const testsOfTeacher = [...teacher.tests].sort(
+          (firstTest, secondTest) => Number(secondTest.idTest) - Number(firstTest.idTest)
+        );
+
+        return {
+          ...teacher,
+          tests: testsOfTeacher,
+          publishedCount: testsOfTeacher.filter((item) => Number(item.status) === 1).length,
+          unpublishedCount: testsOfTeacher.filter((item) => Number(item.status) !== 1).length,
+        };
+      })
+      .sort((firstTeacher, secondTeacher) =>
+        getTeacherSortKey(firstTeacher).localeCompare(getTeacherSortKey(secondTeacher), "vi", { numeric: true })
+      );
+  }, [historyTests, tests]);
+
+  const filteredTeachers = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+    if (!query) return groupedTeachers;
+
+    return groupedTeachers.filter((teacher) => {
+      const teacherIdText = String(teacher.teacherId ?? "").toLowerCase();
+      const teacherNameText = String(teacher.teacherName ?? "").toLowerCase();
+      const teacherUserNameText = String(teacher.teacherUserName ?? "").toLowerCase();
+      return (
+        teacherIdText.includes(query) ||
+        teacherNameText.includes(query) ||
+        teacherUserNameText.includes(query)
+      );
+    });
+  }, [groupedTeachers, searchQuery]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery]);
+
+  const totalTeachers = filteredTeachers.length;
+  const totalPages = Math.ceil(totalTeachers / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const currentTeachers = filteredTeachers.slice(startIndex, endIndex);
+
+  const detailTests = selectedTeacher?.tests || [];
 
   return (
     <main className="max-w-6xl w-full mx-auto space-y-6 p-4">
-      <h1 className="text-2xl font-bold">Quản lý đề thi</h1>
-      {/* Danh sách đề thi */}
       <section className="flex flex-col py-5 px-8 gap-5 border-2 border-gray-200 rounded-xl shadow-md">
-        <h1 className="text-2xl font-bold">Danh sách đề thi</h1>
-        <div className="flex flex-row gap-4 w-full px-6 py-3">
+        <div className="flex flex-col gap-2">
+          <h1 className="text-2xl font-bold">Quản lý đề thi</h1>
+          <p className="text-sm text-gray-500 font-medium">
+            Mỗi dòng tương ứng với một giáo viên, hiển thị số đề đã phát hành và chưa phát hành.
+          </p>
+        </div>
+
+        <div className="flex flex-row gap-4 w-full px-0 py-1">
           <SearchBar
-            text="Tìm kiếm đề thi theo ID hoặc tên đề thi"
+            text="Tìm theo userId hoặc tên giáo viên"
             focusBorderColor="focus:ring-gray-400"
-            value={searchExamQuery}
-            onChange={(e) => {
-              setSearchExamQuery(e.target.value);
-              setCurrentPageExams(1);
-            }}
+            value={searchQuery}
+            onChange={(event) => setSearchQuery(event.target.value)}
           />
         </div>
-        <p className="px-6 -mt-2 text-sm text-gray-500 font-medium">
-          Chỉ tài khoản Giáo viên mới được thêm mới đề thi.
-        </p>
-        {loadingTest ? (
-          <div className="text-center py-4 text-gray-600 font-semibold text-lg">
-            Đang tải...
-          </div>
+
+        {loadingTest || loadingHistoryTest ? (
+          <div className="text-center py-4 text-gray-600 font-semibold text-lg">Đang tải...</div>
         ) : (
           <>
-            <table className="w-full min-w-[600px] text-center border-2 border-gray-300 rounded-2xl overflow-hidden border-separate border-spacing-0">
+            <table className="w-full min-w-[720px] text-center border-2 border-gray-300 rounded-2xl overflow-hidden border-separate border-spacing-0">
               <thead className="bg-gray-200">
                 <tr className="text-black font-bold">
-                  <th className="py-3 px-4">Exam ID</th>
-                  <th className="py-3 px-4">Tên đề thi</th>
-                  <th className="py-3 px-4">Số câu hỏi</th>
+                  <th className="py-3 px-4">User ID</th>
+                  <th className="py-3 px-4">Tên giáo viên</th>
+                  <th className="py-3 px-4">Số đề đã phát hành</th>
+                  <th className="py-3 px-4">Số đề chưa phát hành</th>
                   <th className="py-3 px-4">Hành động</th>
                 </tr>
               </thead>
               <tbody>
-                {currentExams.map((exam) => (
-                  <tr key={exam.idTest} className="hover:bg-gray-100">
-                    <td className="px-4 py-4 text-gray-600 font-semibold">
-                      {exam.idTest}
-                    </td>
-                    <td className="px-4 py-4 font-bold text-[#2C99E2]">
-                      {exam.testName}
-                    </td>
-                    <td className="px-4 py-4 text-gray-600 font-semibold">
-                      {exam.numberOfQuestion}
-                    </td>
-                    <td className="px-4 py-4 flex gap-2 items-center justify-center">
+                {currentTeachers.map((teacher) => (
+                  <tr key={String(teacher.teacherId)} className="hover:bg-gray-100">
+                    <td className="px-4 py-4 text-gray-600 font-semibold">{teacher.teacherId ?? "N/A"}</td>
+                    <td className="px-4 py-4 font-bold text-[#2C99E2]">{teacher.teacherName}</td>
+                    <td className="px-4 py-4 text-gray-600 font-semibold">{teacher.publishedCount}</td>
+                    <td className="px-4 py-4 text-gray-600 font-semibold">{teacher.unpublishedCount}</td>
+                    <td className="px-4 py-4">
                       <Button
-                        text="Chỉnh sửa"
+                        text="Xem chi tiết"
                         variant="default"
                         size="sm"
-                        icon={<FontAwesomeIcon icon="fa-solid fa-pencil" />}
-                        onClick={() => {
-                          handleEditExam(exam.idTest)
-                          setShowEditExam(true);
-                        }}
-                      />
-                      <Button
-                        text="Xóa"
-                        variant="delete"
-                        size="sm"
-                        hoverBg="hover:bg-red-700"
-                        icon={<FontAwesomeIcon icon="fa-solid fa-trash" />}
-                        onClick={() =>{
-                          setSelectedExam(exam);
-                          setShowModal(true);
-                          console.log("Selected exam for deletion:", exam.idTest);
-                        }}
+                        icon={<FontAwesomeIcon icon="fa-solid fa-eye" />}
+                        onClick={() => setSelectedTeacher(teacher)}
                       />
                     </td>
                   </tr>
                 ))}
-                {currentExams.length === 0 && (
+                {currentTeachers.length === 0 && (
                   <tr>
-                    <td
-                      colSpan="4"
-                      className="text-center text-gray-600 font-semibold py-4"
-                    >
-                      Không tìm thấy đề thi.
+                    <td colSpan="5" className="text-center text-gray-600 font-semibold py-4">
+                      Không tìm thấy giáo viên phù hợp.
                     </td>
                   </tr>
                 )}
               </tbody>
             </table>
-            {totalExams > 0 && (
+
+            {totalTeachers > 0 && (
               <div className="flex justify-between items-center p-4">
                 <span className="text-sm text-gray-600 font-semibold">
-                  Hiển thị từ {startIndexExams + 1} đến{" "}
-                  {Math.min(endIndexExams, totalExams)} trong số {totalExams} đề
-                  thi
+                  Hiển thị từ {startIndex + 1} đến {Math.min(endIndex, totalTeachers)} trong số {totalTeachers} giáo viên
                 </span>
                 <Pagination
-                  currentPage={currentPageExams}
-                  totalPages={totalExamPages}
-                  onPageChange={(page) => setCurrentPageExams(page)}
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={(page) => setCurrentPage(page)}
                 />
               </div>
             )}
@@ -227,121 +203,57 @@ const handleEditExam = async (examId) => {
         )}
       </section>
 
-      {/* Kết quả làm bài */}
-      <section className="flex flex-col py-5 px-8 gap-5 border-2 border-gray-200 rounded-xl shadow-md">
-        <h1 className="text-2xl font-bold">Kết quả làm bài</h1>
-        <div className="flex justify-center py-3">
-          <div className="w-full max-w-3xl">
-            <SearchBar
-              text="Tìm kiếm kết quả theo ID hoặc email"
-              focusBorderColor="focus:ring-gray-400"
-              value={searchResultQuery}
-              onChange={(e) => {
-                setSearchResultQuery(e.target.value);
-                setCurrentPageResults(1);
-              }}
-            />
+      {selectedTeacher && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
+          <div className="w-full max-w-5xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl">
+            <div className="flex items-center justify-between gap-4 border-b pb-4">
+              <div>
+                <h2 className="text-2xl font-bold">Chi tiết đề thi của giáo viên</h2>
+                <p className="text-sm text-gray-500">
+                  User ID: {selectedTeacher.teacherId ?? "N/A"} • Tên: {selectedTeacher.teacherName}
+                </p>
+              </div>
+              <Button text="Đóng" variant="default" size="sm" onClick={() => setSelectedTeacher(null)} />
+            </div>
+
+            <div className="mt-5 overflow-hidden rounded-xl border border-gray-200">
+              <table className="w-full min-w-[720px] text-center border-separate border-spacing-0">
+                <thead className="bg-gray-100">
+                  <tr className="font-bold text-black">
+                    <th className="py-3 px-4">Test ID</th>
+                    <th className="py-3 px-4">Tên đề thi</th>
+                    <th className="py-3 px-4">Trạng thái</th>
+                    <th className="py-3 px-4">Số câu hỏi</th>
+                    <th className="py-3 px-4">Số lượt làm</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {detailTests.map((test) => (
+                    <tr key={String(test.idTest)} className="hover:bg-gray-50">
+                      <td className="px-4 py-4 text-gray-600 font-semibold">{test.idTest}</td>
+                      <td className="px-4 py-4 font-bold text-[#2C99E2]">{test.testName}</td>
+                      <td className="px-4 py-4">
+                        <span className={`inline-flex rounded-full px-3 py-1 text-sm font-semibold ${getStatusClassName(test.status)}`}>
+                          {getStatusLabel(test.status)}
+                        </span>
+                      </td>
+                      <td className="px-4 py-4 text-gray-600 font-semibold">{test.numberOfQuestion || 0}</td>
+                      <td className="px-4 py-4 text-gray-600 font-semibold">{test.attemptCount}</td>
+                    </tr>
+                  ))}
+                  {detailTests.length === 0 && (
+                    <tr>
+                      <td colSpan="5" className="text-center text-gray-600 font-semibold py-4">
+                        Giáo viên này chưa có đề thi nào.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
-        {loadingHistoryTest ? (
-          <div className="text-center py-4 text-gray-600 font-semibold text-lg">
-            Đang tải...
-          </div>
-        ) : (
-          <>
-            <table className="w-full min-w-[600px] text-center border-2 border-gray-300 rounded-2xl overflow-hidden border-separate border-spacing-0">
-              <thead className="bg-gray-200">
-                <tr className="text-black font-bold">
-                  <th className="py-3 px-4">Result ID</th>
-                  <th className="py-3 px-4">Email</th>
-                  <th className="py-3 px-4">Điểm số</th>
-                  <th className="py-3 px-4">Ngày nộp bài</th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentResults.map((result) => (
-                  <tr key={result.idTestHistory} className="hover:bg-gray-100">
-                    <td className="px-4 py-4 text-gray-600 font-semibold">
-                      {result.idTestHistory}
-                    </td>
-                    <td className="px-4 py-4 text-gray-600 font-semibold">
-                      {result.email}
-                    </td>
-                    <td className="px-4 py-4 font-bold text-[#2C99E2]">
-                      {result.score || "N/A"} / 990
-                    </td>
-                    <td className="px-4 py-4 text-gray-600 font-semibold">
-                      {result.dateTest || "N/A"}
-                    </td>
-                  </tr>
-                ))}
-                {currentResults.length === 0 && (
-                  <tr>
-                    <td
-                      colSpan="5"
-                      className="text-center text-gray-600 font-semibold py-4"
-                    >
-                      Không tìm thấy kết quả.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-            {totalResults > 0 && (
-              <div className="flex justify-between items-center p-4">
-                <span className="text-sm text-gray-600 font-semibold">
-                  Hiển thị từ {startIndexResults + 1} đến{" "}
-                  {Math.min(endIndexResults, totalResults)} trong số{" "}
-                  {totalResults} kết quả
-                </span>
-                <Pagination
-                  currentPage={currentPageResults}
-                  totalPages={totalResultPages}
-                  onPageChange={(page) => setCurrentPageResults(page)}
-                />
-              </div>
-            )}
-          </>
-        )}
-      </section>
-
-      {/* Thêm đề thi */}
-      <AddOrEditExam
-        show={showAddExam}
-        onClose={() => setShowAddExam(false)}
-      />
-      {/* Chỉnh sửa đề thi */}
-      <AddOrEditExam
-        show={showEditExam}
-        onClose={() => {
-          setShowEditExam(false);
-          setSelectedExam(null);
-        }}
-        examData={selectedExam}
-      />
-
-      {/* Xóa đề thi */}
-      <ModalConfirm
-        show={showModal}
-        title="Xác nhận xóa đề thi"
-        description={`Bạn có chắc chắn muốn xóa đề thi '${
-          selectedExam?.testName || "N/A"
-        }'? Hành động này không thể hoàn tác.`}
-        hoverBgConfirm="hover:bg-red-700"
-        onCancel={handleCancel}
-        onConfirm={() => handleDelete(selectedExam)}
-      />
-  
-
-      {/* Xem chi tiết kết quả */}
-      <DetailExamResult
-        show={showDetailResult}
-        onClose={() => {
-          setShowDetailResult(false);
-          setSelectedResult(null);
-        }}
-        result={selectedResult}
-      />
+      )}
     </main>
   );
 };

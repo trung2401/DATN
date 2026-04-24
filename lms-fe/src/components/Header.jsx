@@ -87,14 +87,14 @@ const Header = () => {
               Đề thi
             </NavLink>
             <NavLink
-              to="/dictionary"
+              to="/course"
               className={({ isActive }) =>
                 isActive
                   ? "text-[#2C99E2] font-bold border-b-2 border-[#2C99E2] py-2"
                   : "text-gray-600 font-semibold py-2 hover:text-[#2C99E2] hover:font-bold"
               }
             >
-              Từ điển
+              Khóa học
             </NavLink>
             <NavLink
               to="/note"
@@ -236,7 +236,7 @@ const Header = () => {
                 Đề thi
               </NavLink>
               <NavLink
-                to="/dictionary"
+                to="/course"
                 onClick={toggleMobileMenu}
                 className={({ isActive }) =>
                   isActive
@@ -244,7 +244,7 @@ const Header = () => {
                     : "text-gray-600 font-medium hover:text-[#2C99E2] px-4 py-2 rounded-lg"
                 }
               >
-                Từ điển
+                Khóa học
               </NavLink>
               <NavLink
                 to="/note"

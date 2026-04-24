@@ -3,7 +3,7 @@ import Button from "../../components/Button.jsx";
 import ModalWrapper from "../ModalWrapper.jsx";
 import { useState, useEffect } from "react";
 
-const FlipCard = ({ show, onClose, vocabulary, vocabularies, onStudy }) => {
+const FlipCard = ({ show, onClose, vocabulary, vocabularies, onStudy, readOnlyStudy = false }) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentVocab, setCurrentVocab] = useState(vocabulary);
@@ -29,6 +29,7 @@ const FlipCard = ({ show, onClose, vocabulary, vocabularies, onStudy }) => {
   };
 
   const handleStudy = () => {
+    if (readOnlyStudy) return;
     onStudy(currentVocab);
     onClose();
   };
@@ -130,17 +131,21 @@ const FlipCard = ({ show, onClose, vocabulary, vocabularies, onStudy }) => {
         
         <div className="flex gap-2 w-full justify-between">
           <div className="flex items-center justify-center">
-            <Button
-              text={Number(currentVocab.status) === 1 ? "Đã học" : "Đánh dấu là đã học"}
-              icon={Number(currentVocab.status) === 1 ? null : <FontAwesomeIcon icon="fa-solid fa-check" />}
-              variant="default"
-              size="sm"
-              onClick={handleStudy}
-              textColor={Number(currentVocab.status) === 1 ? "text-white" : "text-gray-600"}
-              border="border-2 border-gray-200"
-              bg={Number(currentVocab.status) === 1 ? "bg-black" : "bg-white"}
-              disabled={Number(currentVocab.status) === 1}
-            />
+            {!readOnlyStudy ? (
+              <Button
+                text={Number(currentVocab.status) === 1 ? "Đã học" : "Đánh dấu là đã học"}
+                icon={Number(currentVocab.status) === 1 ? null : <FontAwesomeIcon icon="fa-solid fa-check" />}
+                variant="default"
+                size="sm"
+                onClick={handleStudy}
+                textColor={Number(currentVocab.status) === 1 ? "text-white" : "text-gray-600"}
+                border="border-2 border-gray-200"
+                bg={Number(currentVocab.status) === 1 ? "bg-black" : "bg-white"}
+                disabled={Number(currentVocab.status) === 1}
+              />
+            ) : (
+              <span className="text-sm text-gray-500 font-semibold">Chế độ xem từ vựng</span>
+            )}
           </div>
           <div className="flex gap-2 justify-center items-center">
             <button
