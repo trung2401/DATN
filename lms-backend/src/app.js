@@ -39,6 +39,9 @@ app.use('/api/register-course', registerCourseRoutes);
 const testRoutes = require('./routes/testRoutes');
 app.use('/api/test', testRoutes);
 
+const teacherRoutes = require('./routes/teacherRoutes');
+app.use('/api/teacher', teacherRoutes);
+
 app.listen(PORT, () => {
     console.log(`🚀 Server đang chạy tại: http://localhost:${PORT}`);
 });

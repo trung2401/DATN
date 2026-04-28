@@ -305,13 +305,16 @@ export const fetchLockAccountByAdmin = createAsyncThunk(
 // Doanh thu
 export const fetchRevenue = createAsyncThunk(
   "admin/fetchRevenue",
-  async (_, { rejectWithValue }) => {
+  async ({ startDate, endDate } = {}, { rejectWithValue }) => {
     try {
-      const response = await getRevenue();
+      const response = await getRevenue({ startDate, endDate });
+      const payload = response?.data ?? response;
       if (response.status === 200) {
         return {
-          totalAmount: Number(response?.data?.totalAmount || 0),
-          numberTransaction: Number(response?.data?.numberTransaction || 0),
+          totalAmount: Number(payload?.totalAmount || 0),
+          numberTransaction: Number(payload?.numberTransaction || 0),
+          revenueSeries: Array.isArray(payload?.revenueSeries) ? payload.revenueSeries : [],
+          range: payload?.range || { startDate: null, endDate: null },
         };
       } else {
         return rejectWithValue("Lỗi khi lấy doanh thu");
@@ -529,6 +532,11 @@ const initialState = {
   revenue: {
     totalAmount: 0,
     numberTransaction: 0,
+    revenueSeries: [],
+    range: {
+      startDate: null,
+      endDate: null,
+    },
   },
   transactions: [],
   tempExam: {

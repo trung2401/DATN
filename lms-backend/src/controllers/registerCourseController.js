@@ -183,22 +183,66 @@ const getAllRegisterCourses = async (req, res) => {
     }
 };
 
+const toStartOfDay = (value) => {
+    if (!value) return null;
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return null;
+    date.setHours(0, 0, 0, 0);
+    return date;
+};
+
+const toEndExclusive = (value) => {
+    if (!value) return null;
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return null;
+    date.setDate(date.getDate() + 1);
+    date.setHours(0, 0, 0, 0);
+    return date;
+};
+
 const getTotalRevenueConfirmed = async (req, res) => {
     try {
-        const whereConfirmed = { status: 'confirmed' };
-        const [totalAmount, numberTransaction] = await Promise.all([
-            RegisterCourse.sum('TotalAmount', {
-                where: whereConfirmed
-            }),
-            RegisterCourse.count({
-                where: whereConfirmed
+        const startDate = toStartOfDay(req.query.startDate);
+        const endDateExclusive = toEndExclusive(req.query.endDate);
+
+        const where = { status: 'confirmed' };
+        if (startDate || endDateExclusive) {
+            where.ConfirmDate = {};
+            if (startDate) {
+                where.ConfirmDate[require('sequelize').Op.gte] = startDate;
+            }
+            if (endDateExclusive) {
+                where.ConfirmDate[require('sequelize').Op.lt] = endDateExclusive;
+            }
+        }
+
+        const [totalAmount, numberTransaction, revenueRows] = await Promise.all([
+            RegisterCourse.sum('TotalAmount', { where }),
+            RegisterCourse.count({ where }),
+            RegisterCourse.findAll({
+                attributes: [
+                    [require('sequelize').fn('DATE', require('sequelize').col('ConfirmDate')), 'date'],
+                    [require('sequelize').fn('SUM', require('sequelize').col('TotalAmount')), 'revenue']
+                ],
+                where,
+                group: [require('sequelize').fn('DATE', require('sequelize').col('ConfirmDate'))],
+                order: [[require('sequelize').fn('DATE', require('sequelize').col('ConfirmDate')), 'ASC']],
+                raw: true
             })
         ]);
 
         return res.json({
             success: true,
             totalAmount: Number(totalAmount || 0),
-            numberTransaction: Number(numberTransaction || 0)
+            numberTransaction: Number(numberTransaction || 0),
+            range: {
+                startDate: startDate ? startDate.toISOString() : null,
+                endDate: endDateExclusive ? new Date(endDateExclusive.getTime() - 1).toISOString() : null
+            },
+            revenueSeries: revenueRows.map((row) => ({
+                date: row.date,
+                revenue: Number(row.revenue || 0)
+            }))
         });
     } catch (error) {
         return res.status(500).json({ error: error.message });

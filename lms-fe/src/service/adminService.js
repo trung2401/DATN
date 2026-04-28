@@ -106,8 +106,15 @@ const getAllPayment = () => {
 }
 
 // Lấy doanh thu
-const getRevenue = () => {
-  const URL_BACKEND = 'register-course/getTotalRevenueConfirmed'
+const getRevenue = ({ startDate, endDate } = {}) => {
+  const params = new URLSearchParams();
+  if (startDate) params.set('startDate', startDate);
+  if (endDate) params.set('endDate', endDate);
+
+  const query = params.toString();
+  const URL_BACKEND = query
+    ? `register-course/getTotalRevenueConfirmed?${query}`
+    : 'register-course/getTotalRevenueConfirmed';
   return axios.get(URL_BACKEND);
 }
 
