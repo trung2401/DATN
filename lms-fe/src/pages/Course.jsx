@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -38,6 +38,7 @@ const PART_LABELS = {
 const Course = () => {
   const isLoggedIn = useSelector((state) => state.auth.isAuthenticated);
   const userInfo = useSelector((state) => state.user.userInfo);
+  const navigate = useNavigate();
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(null);
@@ -150,6 +151,30 @@ const Course = () => {
     setShowPaymentModal(true);
   };
 
+  const handleContactTeacher = (course) => {
+    const teacherId = Number(course?.teacherId || course?.TeacherID || course?.teacher?.userId || 0);
+    if (!teacherId) {
+      toast.error("Không xác định được giáo viên của khóa học này.");
+      return;
+    }
+
+    if (!isLoggedIn) {
+      navigate("/login", {
+        state: {
+          redirectTo: "/chat",
+          chatContactUserId: teacherId,
+        },
+      });
+      return;
+    }
+
+    navigate("/chat", {
+      state: {
+        contactUserId: teacherId,
+      },
+    });
+  };
+
   const handleConfirmPaidAndRegister = async () => {
     const courseId = Number(selectedCourse?.courseId);
     if (!courseId) return;
@@ -210,7 +235,7 @@ const Course = () => {
               >
                 <div className="relative h-48 bg-gray-100">
                   <img src={imageUrl} alt={courseName} className="w-full h-full object-cover" />
-                  <span className="absolute top-2 right-2 bg-[#25D390] text-white text-sm font-semibold px-3 py-1 rounded-sm">
+                  <span className="absolute top-2 right-2 bg-[#2C99E2] text-white text-sm font-semibold px-3 py-1 rounded-sm">
                     {formatCurrency(Number(course?.price || 0))}
                   </span>
                 </div>
@@ -223,6 +248,18 @@ const Course = () => {
                   <p className="text-gray-600 text-sm">Mục tiêu: {course?.target || "Đang cập nhật"}</p>
                   <p className="text-gray-500 text-sm">Số lượng học viên: {Number(course?.studentCount || 0)}</p>
                   <p className="text-[#2C99E2] text-sm font-semibold pt-2">Nhấn để xem chương trình học</p>
+                  <div className="pt-2 flex justify-end">
+                    <Button
+                      text="Liên hệ giáo viên"
+                      variant="default"
+                      size="sm"
+                      icon={<FontAwesomeIcon icon="fa-solid fa-comments" />}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        handleContactTeacher(course);
+                      }}
+                    />
+                  </div>
                 </div>
               </article>
             );

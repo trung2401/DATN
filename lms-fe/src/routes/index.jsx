@@ -4,6 +4,7 @@ import VideoLession from "../pages/VideoLession";
 import CourseVocabulary from "../pages/CourseVocabulary";
 import Exam from "../pages/Exam";
 import Note from "../pages/Note";
+import Chat from "../pages/Chat";
 import Login from "../components/Login";
 import Register from "../components/Register";
 import ForgotPassword from "../components/ForgotPassword";
@@ -105,6 +106,15 @@ const routes = [
         component: (
           <PrivateRoute>
             <Note />
+          </PrivateRoute>
+        ),
+        protected: true,
+      },
+      {
+        path: "/chat",
+        component: (
+          <PrivateRoute>
+            <Chat mode="user" />
           </PrivateRoute>
         ),
         protected: true,
@@ -239,6 +249,15 @@ const routes = [
         component: (
           <PrivateRoute requiredRole="TEACHER">
             <ManageVocabulary />
+          </PrivateRoute>
+        ),
+        protected: true,
+      },
+      {
+        path: "/teacher/chat",
+        component: (
+          <PrivateRoute requiredRole="TEACHER">
+            <Chat mode="teacher" />
           </PrivateRoute>
         ),
         protected: true,

@@ -8,15 +8,11 @@ import {
 import FeatureCard from "../components/Home/FeatureCard.jsx";
 import Button from "../components/Button.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import PricingCard from "../components/Home/PricingCard.jsx";
-import FeedbackCard from "../components/Home/FeedbackCard.jsx";
+import FeaturedCoursesCard from "../components/Home/FeaturedCoursesCard.jsx";
 import LearningStatisticsCard from "../components/StatisticsCard.jsx";
 import RecentResultsCard from "../components/Home/RecentResultsCard.jsx";
 import { Link } from "react-router-dom";
 const banner = "https://pub-e860ef97c13d407c808df35aa1a698c7.r2.dev/material-web-app/1.png";
-const feedback_1 = "https://pub-e860ef97c13d407c808df35aa1a698c7.r2.dev/material-web-app/2.png";
-const feedback_2 = "https://pub-e860ef97c13d407c808df35aa1a698c7.r2.dev/material-web-app/3.png";
-const feedback_3 = "https://pub-e860ef97c13d407c808df35aa1a698c7.r2.dev/material-web-app/4.png";
 
 const sectionData = {
   banner: {
@@ -67,27 +63,6 @@ const sectionData = {
       path: "/note",
     },
   ],
-  feedbacks: [
-    {
-      name: "Anhdaden",
-      message: "Nền tảng rất hữu ích, tôi đã cải thiện điểm thi đáng kể!",
-      avatar: feedback_1,
-    },
-    {
-      name: "batocom",
-      message: "Từ điển thông minh giúp tôi học từ vựng nhanh hơn rất nhiều!",
-      avatar: feedback_2,
-    },
-    {
-      name: "anhhai",
-      message: "Giao diện dễ sử dụng, nội dung phong phú, rất đáng để đầu tư!",
-      avatar: feedback_3,
-    },
-  ],
-  cta: {
-    title: "Sẵn sàng chinh phục Tiếng Anh?",
-    buttonText: "Đăng ký ngay",
-  },
 };
 
 const Home = () => {
@@ -350,47 +325,26 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Pricing Section */}
+      {/* Featured Courses Section */}
       <section className="py-3">
-        <PricingCard />
+        <FeaturedCoursesCard />
       </section>
 
       {!isLoggedIn && (
-        <>
-          {/* Feedback Section */}
-          <section className="py-3">
-            <div className="container mx-auto px-4">
-              <h2 className="text-3xl font-bold text-center mb-12">
-                Học viên nói gì về EnglishMastery
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {sectionData.feedbacks.map((feedback, index) => (
-                  <FeedbackCard
-                    key={index}
-                    name={feedback.name}
-                    message={feedback.message}
-                    avatar={feedback.avatar}
-                  />
-                ))}
-              </div>
-            </div>
-          </section>
-          {/* CTA Section */}
-          <section className="py-15 bg-[#E6F0FA] flex items-center justify-center">
-            <div className="text-center mx-auto px-4 flex-col items-center justify-center">
-              <h2 className="text-3xl font-bold mb-6">
-                {sectionData.cta.title}
-              </h2>
-              <Link to="/login">
-                <Button
-                  text={sectionData.cta.buttonText}
-                  variant="primary"
-                  size="md"
-                />
-              </Link>
-            </div>
-          </section>
-        </>
+        <section className="py-15 bg-[#E6F0FA] flex items-center justify-center">
+          <div className="text-center mx-auto px-4 flex-col items-center justify-center">
+            <h2 className="text-3xl font-bold mb-6">
+              Sẵn sàng chinh phục Tiếng Anh?
+            </h2>
+            <Link to="/login">
+              <Button
+                text="Đăng ký ngay"
+                variant="primary"
+                size="md"
+              />
+            </Link>
+          </div>
+        </section>
       )}
     </main>
   );

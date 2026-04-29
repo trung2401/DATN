@@ -106,6 +106,18 @@ const Header = () => {
             >
               Ghi chú
             </NavLink>
+            {isLoggedIn && (
+              <NavLink
+                to="/chat"
+                className={({ isActive }) =>
+                  isActive
+                    ? "text-[#2C99E2] font-bold border-b-2 border-[#2C99E2] py-2"
+                    : "text-gray-600 font-semibold py-2 hover:text-[#2C99E2] hover:font-bold"
+                }
+              >
+                Chat
+              </NavLink>
+            )}
           </nav>
 
           {/* Mobile menu icon */}
@@ -257,6 +269,19 @@ const Header = () => {
               >
                 Ghi chú
               </NavLink>
+              {isLoggedIn && (
+                <NavLink
+                  to="/chat"
+                  onClick={toggleMobileMenu}
+                  className={({ isActive }) =>
+                    isActive
+                      ? "bg-[#2C99E2] text-white font-bold px-4 py-2 rounded-lg"
+                      : "text-gray-600 font-medium hover:text-[#2C99E2] px-4 py-2 rounded-lg"
+                  }
+                >
+                  Chat
+                </NavLink>
+              )}
             </nav>
 
             {isLoggedIn ? (

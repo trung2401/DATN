@@ -1,8 +1,10 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const http = require('http');
 const sequelize = require('./config/db');
 require('dotenv').config();
+const { initChatSocket } = require('./socket/chatSocket');
 
 const app = express();
 
@@ -42,6 +44,12 @@ app.use('/api/test', testRoutes);
 const teacherRoutes = require('./routes/teacherRoutes');
 app.use('/api/teacher', teacherRoutes);
 
-app.listen(PORT, () => {
+const chatRoutes = require('./routes/chatRoutes');
+app.use('/api/chat', chatRoutes);
+
+const server = http.createServer(app);
+initChatSocket(server);
+
+server.listen(PORT, () => {
     console.log(`🚀 Server đang chạy tại: http://localhost:${PORT}`);
 });

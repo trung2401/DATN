@@ -77,6 +77,12 @@ const TeacherLayout = ({ children }) => {
                 Quản lý từ vựng
               </span>
             </NavLink>
+            <NavLink to="/teacher/chat" className={linkClass}>
+              <span className="flex gap-4 items-center">
+                <FontAwesomeIcon icon="fa-solid fa-comments" className="w-5 h-5" />
+                Chat học viên
+              </span>
+            </NavLink>
           </nav>
 
           <div className="relative mt-auto">

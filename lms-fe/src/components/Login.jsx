@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Button from "../components/Button.jsx";
 import { validateLogin } from "../utils/validate.js";
 import { authLogin } from "../service/authService.js";
@@ -18,6 +18,7 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -86,6 +87,19 @@ const Login = () => {
           dispatch(loginSuccess({ role: normalizedRole }));
           console.log(normalizedRole);
           toast.success("Đăng nhập thành công");
+
+          const redirectTo = location.state?.redirectTo;
+          const chatContactUserId = location.state?.chatContactUserId;
+
+          if (redirectTo === "/chat" && chatContactUserId) {
+            navigate("/chat", {
+              state: {
+                contactUserId: Number(chatContactUserId),
+              },
+            });
+            return;
+          }
+
           if (normalizedRole === "ADMIN") {
             navigate("/admin");
           } else if (normalizedRole === "TEACHER") {
