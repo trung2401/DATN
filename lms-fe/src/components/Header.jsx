@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Logo from "../assets/images/logo-bg_white.png";
+import Logo from "../assets/images/Logo_toeic.png";
 import { Link, useNavigate, NavLink } from "react-router-dom";
 import Button from "../components/Button.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -62,7 +62,7 @@ const Header = () => {
             onClick={() => navigate("/")}
           >
             <img src={Logo} alt="" className="h-14 w-auto" />
-            <span className="font-bold text-lg -ml-2">EnglishMastery</span>
+            <span className="font-bold text-lg -ml-2">Zone</span>
           </div>
           {/* Navbar */}
           <nav className="hidden md:flex items-center space-x-8">

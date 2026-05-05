@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Logo from '../assets/images/logo-bg_white.png';
+import Logo from "../assets/images/Logo_toeic.png";
 import { authLogout } from '../service/authService';
+import { getUser } from '../service/userService';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import { logout } from '../redux/slice/authSlice';
@@ -11,6 +12,7 @@ const TeacherLayout = ({ children }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [username, setUsername] = useState('');
 
   const linkClass = ({ isActive }) =>
     `px-4 py-2 rounded transition-all duration-200 transform ${
@@ -43,13 +45,28 @@ const TeacherLayout = ({ children }) => {
     toast.error('Đã xảy ra lỗi khi đăng xuất. Vui lòng thử lại.');
   };
 
+    useEffect(() => {
+      const fetchUser = async () => {
+        try {
+          const res = await getUser();
+          const payload = res?.data ?? res;
+          const name = payload?.userName || payload?.UserName || payload?.name || payload?.Name || '';
+          setUsername(name || '');
+        } catch {
+          setUsername('');
+        }
+      };
+
+      fetchUser();
+    }, []);
+
   return (
     <div className="min-h-screen flex flex-col">
       <div className="flex flex-row">
         <aside className="w-64 border-r-2 border-gray-200 p-4 space-y-4 sticky top-0 h-screen overflow-y-auto scroll-smooth">
           <div className="flex items-center">
             <img src={Logo} alt="" className="h-14 w-auto" />
-            <span className="font-bold text-lg -ml-2">EnglishMastery</span>
+            <span className="font-bold text-lg -ml-2">Zone</span>
           </div>
 
           <nav className="flex flex-col space-y-2">
@@ -95,7 +112,7 @@ const TeacherLayout = ({ children }) => {
               </div>
               <div className="flex flex-col">
                 <span className="font-semibold">Giáo viên</span>
-                <span className="text-sm text-gray-600">Quản lý đề thi</span>
+                <span className="text-sm text-gray-600">{username || 'Giáo viên'}</span>
               </div>
               <FontAwesomeIcon
                 icon="fa-solid fa-caret-down"

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from "react-router-dom";
-import Logo from "../assets/images/logo-bg_gray.png";
+import Logo from "../assets/images/Logo_toeic_gray.png";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const Footer = () => {
@@ -12,10 +12,10 @@ const Footer = () => {
           <div>
             <div className="flex items-center -mt-4">
               <img src={Logo} alt="" className="h-14 w-auto -ml-5" />
-              <span className="font-bold text-lg -ml-2">EnglishMastery</span>
+              <span className="font-bold text-lg -ml-2">Zone</span>
             </div>
             <p className="text-gray-600 text-sm ">
-              Nền tảng học tiếng Anh hiệu quả với các công cụ thông minh giúp bạn tiến bộ nhanh chóng.
+              Nền tảng học và luyện thi TOEIC hiệu quả với các công cụ thông minh giúp bạn tiến bộ nhanh chóng.
             </p>
           </div>
 
@@ -23,7 +23,7 @@ const Footer = () => {
           <div className="space-y-4">
             <h3 className="font-semibold text-base">Thông tin liên hệ</h3>
             <div className="space-y-2 text-sm text-gray-600">
-              <p>Email: contact@englishmastery.com</p>
+              <p>Email: contact@TOEICZONE.com</p>
               <p>Số điện thoại: 888 8888 888</p>
             </div>
           </div>

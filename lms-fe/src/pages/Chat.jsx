@@ -29,6 +29,17 @@ const Chat = ({ mode = 'user' }) => {
   const activeConversationIdRef = useRef(activeConversationId);
   const loadConversationsRef = useRef(null);
   const handledContactUserIdRef = useRef(null);
+  const messagesContainerRef = useRef(null);
+
+  const scrollMessagesToBottom = (behavior = 'smooth') => {
+    const container = messagesContainerRef.current;
+    if (!container) return;
+
+    container.scrollTo({
+      top: container.scrollHeight,
+      behavior,
+    });
+  };
 
   const resolveCurrentUserId = async () => {
     const localId = Number(localStorage.getItem('user_id') || 0);
@@ -228,6 +239,16 @@ const Chat = ({ mode = 'user' }) => {
   }, [activeConversationId]);
 
   useEffect(() => {
+    if (!activeConversationId) return;
+    scrollMessagesToBottom('auto');
+  }, [activeConversationId]);
+
+  useEffect(() => {
+    if (loading || !activeConversationId) return;
+    scrollMessagesToBottom(messages.length > 1 ? 'smooth' : 'auto');
+  }, [messages, loading, activeConversationId]);
+
+  useEffect(() => {
     loadConversationsRef.current = loadConversations;
   }, [loadConversations]);
 
@@ -266,7 +287,7 @@ const Chat = ({ mode = 'user' }) => {
     <main className="max-w-7xl mx-auto p-4 space-y-5">
       <h1 className="text-2xl font-bold">{title}</h1>
 
-      <div className="grid grid-cols-1 xl:grid-cols-12 gap-4">
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-4 min-h-0">
         <section className="xl:col-span-4 border-2 border-gray-200 rounded-xl p-4 bg-white shadow-sm space-y-4">
           {isTeacherMode && (
             <div>
@@ -330,7 +351,7 @@ const Chat = ({ mode = 'user' }) => {
           </div>
         </section>
 
-        <section className="xl:col-span-8 border-2 border-gray-200 rounded-xl p-4 bg-white shadow-sm flex flex-col min-h-[620px]">
+        <section className="xl:col-span-8 border-2 border-gray-200 rounded-xl p-4 bg-white shadow-sm flex flex-col min-h-[620px] h-[70vh] max-h-[760px] min-w-0">
           {activeConversation ? (
             <>
               <div className="border-b pb-3 mb-3">
@@ -340,7 +361,7 @@ const Chat = ({ mode = 'user' }) => {
                 <p className="text-xs text-gray-500">@{activeConversation.otherUser?.userName}</p>
               </div>
 
-              <div className="flex-1 overflow-y-auto space-y-3 pr-1">
+              <div ref={messagesContainerRef} className="flex-1 min-h-0 overflow-y-auto space-y-3 pr-1 scroll-smooth">
                 {loading ? (
                   <p className="text-center text-gray-500 font-medium">Đang tải tin nhắn...</p>
                 ) : messages.length === 0 ? (

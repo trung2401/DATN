@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import { NavLink ,useNavigate} from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Logo from "../assets/images/logo-bg_white.png";
+import Logo from "../assets/images/Logo_toeic.png";
 import { authLogout } from '../service/authService';
+import { getUser } from '../service/userService';
 import { useDispatch} from 'react-redux';
 import { toast } from 'react-toastify';
 import { logout } from '../redux/slice/authSlice';
@@ -12,6 +13,7 @@ const AdminLayout = ({ children }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [username, setUsername] = useState('');
   const linkClass = ({ isActive }) =>
     `px-4 py-2 rounded transition-all duration-200 transform ${
       isActive
@@ -43,6 +45,20 @@ const AdminLayout = ({ children }) => {
       toast.error('Đã xảy ra lỗi khi đăng xuất. Vui lòng thử lại.');
     }
 };
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await getUser();
+        const payload = res?.data ?? res;
+        const name = payload?.userName || payload?.UserName || payload?.name || payload?.Name || '';
+        setUsername(name || '');
+      } catch {
+        setUsername('');
+      }
+    };
+
+    fetchUser();
+  }, []);
   return (
     <div className="min-h-screen flex flex-col">
       <div className="flex flex-row">
@@ -51,7 +67,7 @@ const AdminLayout = ({ children }) => {
           {/* Logo */}
           <div className="flex items-center">
             <img src={Logo} alt="" className="h-14 w-auto" />
-            <span className="font-bold text-lg -ml-2">EnglishMastery</span>
+            <span className="font-bold text-lg -ml-2">Zone</span>
           </div>
           {/* Navbar */}
           <nav className="flex flex-col space-y-2">
@@ -94,11 +110,17 @@ const AdminLayout = ({ children }) => {
               onClick={toggleDropdown}
             >
               <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#2C99E2] text-white font-bold">
-                AD
+                  {(() => {
+                    const name = username || '';
+                    if (!name) return 'AD';
+                    const parts = name.split(' ').filter(Boolean);
+                    const initials = parts.slice(0, 2).map(p => p[0]).join('').toUpperCase();
+                    return initials || 'AD';
+                  })()}
               </div>
               <div className="flex flex-col">
                 <span className="font-semibold">Admin</span>
-                <span className="text-sm text-gray-600">Quản trị viên</span>
+                  <span className="text-sm text-gray-600">{username || 'Quản trị viên'}</span>
               </div>
               <FontAwesomeIcon
                 icon="fa-solid fa-caret-down"
