@@ -90,7 +90,7 @@ const Footer = () => {
         
       </div>
       <div className="mt-12 pt-6 border-t border-gray-400 text-center text-sm text-gray-500">
-          2025 EnglishMastery. Bản quyền thuộc về chúng tôi
+          2026 ToeicZone. Bản quyền thuộc về chúng tôi
       </div>
     </footer>
   )

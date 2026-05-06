@@ -16,7 +16,7 @@ const banner = "https://pub-e860ef97c13d407c808df35aa1a698c7.r2.dev/material-web
 
 const sectionData = {
   banner: {
-    title: "Học Tiếng Anh hiệu quả cùng EnglishMastery",
+    title: "Học Tiếng Anh hiệu quả cùng ToeicZone",
     description: "Luyện thi, từ vựng, và kỹ năng Tiếng Anh mọi lúc, mọi nơi",
     buttonText: "Bắt đầu ngay",
     image: banner,
