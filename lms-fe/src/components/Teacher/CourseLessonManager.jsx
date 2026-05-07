@@ -343,24 +343,40 @@ const CourseLessonManager = ({ show, onClose, course }) => {
               </select>
             </div>
 
-            <div className="flex flex-col gap-2">
-              <label className="font-semibold text-gray-700">Video bài giảng</label>
-              <input
-                type="file"
-                accept="video/*"
-                onChange={(e) => handleFileUpload(e.target.files?.[0], 'video')}
-              />
-              {form.video && <span className="text-sm text-gray-500 break-all">{form.video}</span>}
+            <div className="rounded-xl border border-dashed border-gray-300 bg-gray-50 p-4 transition hover:border-[#2C99E2] hover:bg-[#f5faff]">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#2C99E2]/10 text-[#2C99E2]">
+                  <FontAwesomeIcon icon="fa-solid fa-video" />
+                </div>
+                <div className="flex-1">
+                  <label className="block font-semibold text-gray-700 mb-1">Video bài giảng</label>
+                  <input
+                    className="block w-full cursor-pointer rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-600 file:mr-4 file:cursor-pointer file:rounded-md file:border-0 file:bg-[#2C99E2] file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-[#2383c5]"
+                    type="file"
+                    accept="video/*"
+                    onChange={(e) => handleFileUpload(e.target.files?.[0], 'video')}
+                  />
+                </div>
+              </div>
+              {form.video && <span className="mt-3 block text-sm text-gray-500 break-all">{form.video}</span>}
             </div>
 
-            <div className="flex flex-col gap-2">
-              <label className="font-semibold text-gray-700">Bài tập</label>
-              <input
-                type="file"
-                accept=".pdf,.doc,.docx,application/pdf"
-                onChange={(e) => handleFileUpload(e.target.files?.[0], 'exercise')}
-              />
-              {form.exercise && <span className="text-sm text-gray-500 break-all">{form.exercise}</span>}
+            <div className="rounded-xl border border-dashed border-gray-300 bg-gray-50 p-4 transition hover:border-[#2C99E2] hover:bg-[#f5faff]">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#2C99E2]/10 text-[#2C99E2]">
+                  <FontAwesomeIcon icon="fa-solid fa-file-lines" />
+                </div>
+                <div className="flex-1">
+                  <label className="block font-semibold text-gray-700 mb-1">Bài tập</label>
+                  <input
+                    className="block w-full cursor-pointer rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-600 file:mr-4 file:cursor-pointer file:rounded-md file:border-0 file:bg-[#2C99E2] file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-[#2383c5]"
+                    type="file"
+                    accept=".pdf,.doc,.docx,application/pdf"
+                    onChange={(e) => handleFileUpload(e.target.files?.[0], 'exercise')}
+                  />
+                </div>
+              </div>
+              {form.exercise && <span className="mt-3 block text-sm text-gray-500 break-all">{form.exercise}</span>}
             </div>
 
             <div className="flex justify-end gap-2">

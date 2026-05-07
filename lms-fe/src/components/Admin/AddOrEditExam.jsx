@@ -149,19 +149,26 @@ const AddOrEditExam = ({ show, onClose, examData, onSaved }) => {
               />
             </div>
 
-            <div className="flex flex-col gap-2 px-2">
-              <label className="font-semibold text-gray-800" htmlFor="teacher-audio-upload">
-                Audio tổng bài nghe
-              </label>
-              <input
-                id="teacher-audio-upload"
-                type="file"
-                accept=".mp3,.wav,.ogg,.m4a,.aac,.flac,audio/*"
-                onChange={handleBasicAudioUpload}
-                className="w-full text-gray-600 font-semibold p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400"
-              />
+            <div className="rounded-xl border border-dashed border-gray-300 bg-gray-50 p-4 transition hover:border-[#2C99E2] hover:bg-[#f5faff] mx-2">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#2C99E2]/10 text-[#2C99E2]">
+                  <FontAwesomeIcon icon="fa-solid fa-music" />
+                </div>
+                <div className="flex-1">
+                  <label className="block font-semibold text-gray-800 mb-1" htmlFor="teacher-audio-upload">
+                    Audio tổng bài nghe
+                  </label>
+                  <input
+                    id="teacher-audio-upload"
+                    type="file"
+                    accept=".mp3,.wav,.ogg,.m4a,.aac,.flac,audio/*"
+                    onChange={handleBasicAudioUpload}
+                    className="block w-full cursor-pointer rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-600 file:mr-4 file:cursor-pointer file:rounded-md file:border-0 file:bg-[#2C99E2] file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-[#2383c5]"
+                  />
+                </div>
+              </div>
 
-              <div className="text-sm text-gray-500 font-medium">
+              <div className="mt-3 text-sm font-medium text-gray-500">
                 {uploadingBasicAudio
                   ? "Đang tải audio..."
                   : basicAudio
@@ -170,7 +177,7 @@ const AddOrEditExam = ({ show, onClose, examData, onSaved }) => {
               </div>
 
               {basicAudio && (
-                <audio controls src={basicAudio} className="mt-2 w-full">
+                <audio controls src={basicAudio} className="mt-3 w-full">
                   Trình duyệt không hỗ trợ phát audio.
                 </audio>
               )}

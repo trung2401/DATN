@@ -46,6 +46,29 @@ const emptyEditState = {
   dataQuestionId: null,
 };
 
+const FileUploadField = ({ label, accept, icon, value, onChange, hint = 'Chưa có file nào' }) => (
+  <div className="rounded-xl border border-dashed border-gray-300 bg-gray-50 p-4 transition hover:border-[#2C99E2] hover:bg-[#f5faff]">
+    <div className="flex items-center gap-3">
+      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#2C99E2]/10 text-[#2C99E2]">
+        <FontAwesomeIcon icon={icon} />
+      </div>
+      <div className="flex-1">
+        <label className="block font-semibold text-gray-700 mb-1">{label}</label>
+        <input
+          type="file"
+          accept={accept}
+          onChange={onChange}
+          className="block w-full cursor-pointer rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-600 file:mr-4 file:cursor-pointer file:rounded-md file:border-0 file:bg-[#2C99E2] file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-[#2383c5]"
+        />
+      </div>
+    </div>
+
+    <div className="mt-3 text-sm font-medium text-gray-500">
+      {value ? <span className="break-all">{value}</span> : hint}
+    </div>
+  </div>
+);
+
 const TestQuestionManager = ({ show, onClose, test }) => {
   const [activePart, setActivePart] = useState(1);
   const [groups, setGroups] = useState([]);
@@ -57,6 +80,9 @@ const TestQuestionManager = ({ show, onClose, test }) => {
   const [singleForm, setSingleForm] = useState(emptySingleForm);
   const [groupForm, setGroupForm] = useState(emptyGroupForm);
   const [groupQuestionForm, setGroupQuestionForm] = useState(emptySingleForm);
+  const [editSingleForm, setEditSingleForm] = useState(emptySingleForm);
+  const [editGroupForm, setEditGroupForm] = useState(emptyGroupForm);
+  const [editGroupQuestionForm, setEditGroupQuestionForm] = useState(emptySingleForm);
 
   const [loadingGroups, setLoadingGroups] = useState(false);
   const [savingSingle, setSavingSingle] = useState(false);
@@ -72,7 +98,58 @@ const TestQuestionManager = ({ show, onClose, test }) => {
     setGroupQuestionForm(emptySingleForm);
   };
 
+  const resetEditForms = () => {
+    setEditSingleForm(emptySingleForm);
+    setEditGroupForm(emptyGroupForm);
+    setEditGroupQuestionForm(emptySingleForm);
+  };
+
   const pickValue = (...values) => values.find((value) => value !== undefined && value !== null && value !== '');
+
+  const normalizeTypeOneFields = (source) => ({
+    transcript: pickValue(source.transcript, source.Transcript, source.TypeOneQuestion?.Transcript) || '',
+    audio: pickValue(source.audio, source.Audio, source.TypeOneQuestion?.Audio) || '',
+  });
+
+  const normalizeTypeTwoFields = (source) => ({
+    questionContent: pickValue(
+      source.questionContent,
+      source.QuestionContent,
+      source.TypeTwoQuestion?.QuestionContent
+    ) || '',
+    contentAnswerA: pickValue(
+      source.contentAnswerA,
+      source.ContentAnswerA,
+      source.TypeTwoQuestion?.ContentAnswerA
+    ) || '',
+    contentAnswerB: pickValue(
+      source.contentAnswerB,
+      source.ContentAnswerB,
+      source.TypeTwoQuestion?.ContentAnswerB
+    ) || '',
+    contentAnswerC: pickValue(
+      source.contentAnswerC,
+      source.ContentAnswerC,
+      source.TypeTwoQuestion?.ContentAnswerC
+    ) || '',
+    contentAnswerD: pickValue(
+      source.contentAnswerD,
+      source.ContentAnswerD,
+      source.TypeTwoQuestion?.ContentAnswerD
+    ) || '',
+  });
+
+  const parseOrderNumber = (value) => {
+    const trimmed = String(value ?? '').trim();
+    if (!trimmed) return null;
+    if (!/^[0-9]+$/.test(trimmed)) return NaN;
+    return Number(trimmed);
+  };
+
+  const hasDuplicateOrderNumber = (list, orderNumber) => {
+    if (orderNumber === null || Number.isNaN(orderNumber)) return false;
+    return (list || []).some((item) => Number(item?.orderNumber) === Number(orderNumber));
+  };
 
   const isEditing = Boolean(editState.mode);
 
@@ -83,6 +160,7 @@ const TestQuestionManager = ({ show, onClose, test }) => {
     setQuestions([]);
     setEditState(emptyEditState);
     resetForms();
+    resetEditForms();
     onClose();
   };
 
@@ -93,13 +171,8 @@ const TestQuestionManager = ({ show, onClose, test }) => {
     answerCorrect: row.answerCorrect,
     answerExplain: row.answerExplain,
     image: row.image || '',
-    audio: row.audio || '',
-    transcript: row.transcript || '',
-    questionContent: row.questionContent || '',
-    contentAnswerA: row.contentAnswerA || '',
-    contentAnswerB: row.contentAnswerB || '',
-    contentAnswerC: row.contentAnswerC || '',
-    contentAnswerD: row.contentAnswerD || '',
+    ...normalizeTypeOneFields(row),
+    ...normalizeTypeTwoFields(row),
     dataQuestionId: row.dataQuestionId || null,
   }));
 
@@ -116,11 +189,7 @@ const TestQuestionManager = ({ show, onClose, test }) => {
       answerCorrect: pickValue(question.answerCorrect, question.AnswerCorrect),
       answerExplain: pickValue(question.answerExplain, question.AnswerExplain) || '',
       image: pickValue(question.image, question.Image) || '',
-      questionContent: pickValue(question.questionContent, question.QuestionContent) || '',
-      contentAnswerA: pickValue(question.contentAnswerA, question.ContentAnswerA) || '',
-      contentAnswerB: pickValue(question.contentAnswerB, question.ContentAnswerB) || '',
-      contentAnswerC: pickValue(question.contentAnswerC, question.ContentAnswerC) || '',
-      contentAnswerD: pickValue(question.contentAnswerD, question.ContentAnswerD) || '',
+      ...normalizeTypeTwoFields(question),
     }))
   }));
 
@@ -183,7 +252,7 @@ const TestQuestionManager = ({ show, onClose, test }) => {
     if (!file) return;
     setUploading(true);
     try {
-      const isAudio = field === 'audio' || (target === 'group' && Number(activePart) <= 4);
+      const isAudio = field === 'audio' || ((target === 'group' || target === 'edit-group') && Number(activePart) <= 4);
       const response = isAudio ? await uploadTestAudio({ file }) : await uploadTestImage({ file });
       const payload = response?.data || response;
       const fileUrl = payload?.url || payload?.data?.url;
@@ -193,6 +262,12 @@ const TestQuestionManager = ({ show, onClose, test }) => {
         setSingleForm((prev) => ({ ...prev, [field]: fileUrl }));
       } else if (target === 'group') {
         setGroupForm((prev) => ({ ...prev, [field]: fileUrl }));
+      } else if (target === 'edit-single') {
+        setEditSingleForm((prev) => ({ ...prev, [field]: fileUrl }));
+      } else if (target === 'edit-group') {
+        setEditGroupForm((prev) => ({ ...prev, [field]: fileUrl }));
+      } else if (target === 'edit-groupQuestion') {
+        setEditGroupQuestionForm((prev) => ({ ...prev, [field]: fileUrl }));
       } else {
         setGroupQuestionForm((prev) => ({ ...prev, [field]: fileUrl }));
       }
@@ -209,11 +284,25 @@ const TestQuestionManager = ({ show, onClose, test }) => {
     const testId = test?.idTest || test?.testId;
     if (!testId) return;
 
+    const orderNumber = parseOrderNumber(singleForm.orderNumber);
+    if (orderNumber === null) {
+      toast.error('Vui lòng nhập số thứ tự câu hỏi');
+      return;
+    }
+    if (Number.isNaN(orderNumber)) {
+      toast.error('Số thứ tự câu hỏi phải là số');
+      return;
+    }
+    if (hasDuplicateOrderNumber(questions, orderNumber)) {
+      toast.error('Số thứ tự câu hỏi đã tồn tại');
+      return;
+    }
+
     setSavingSingle(true);
     try {
       const payload = {
         partId: Number(activePart),
-        orderNumber: singleForm.orderNumber,
+        orderNumber,
         answerCorrect: singleForm.answerCorrect,
         answerExplain: singleForm.answerExplain,
         image: singleForm.image,
@@ -251,6 +340,20 @@ const TestQuestionManager = ({ show, onClose, test }) => {
     const testId = test?.idTest || test?.testId;
     if (!testId) return;
 
+    const orderNumberPart = parseOrderNumber(groupForm.orderNumberPart);
+    if (orderNumberPart === null) {
+      toast.error('Vui lòng nhập số thứ tự cụm');
+      return;
+    }
+    if (Number.isNaN(orderNumberPart)) {
+      toast.error('Số thứ tự cụm phải là số');
+      return;
+    }
+    if (hasDuplicateOrderNumber(groups, orderNumberPart)) {
+      toast.error('Số thứ tự cụm đã tồn tại');
+      return;
+    }
+
     if (!groupForm.dataQuestion && Number(activePart) <= 4) {
       toast.error('Part 3-4 cần audio dùng chung cho cụm');
       return;
@@ -263,7 +366,7 @@ const TestQuestionManager = ({ show, onClose, test }) => {
         partId: Number(activePart),
         dataQuestion: groupForm.dataQuestion,
         transcript: groupForm.transcript,
-        orderNumberPart: groupForm.orderNumberPart,
+        orderNumberPart,
       });
       toast.success('Tạo cụm câu hỏi thành công');
       setGroupForm(emptyGroupForm);
@@ -283,10 +386,30 @@ const TestQuestionManager = ({ show, onClose, test }) => {
       return;
     }
 
+    const orderNumber = parseOrderNumber(groupQuestionForm.orderNumber);
+    if (orderNumber === null) {
+      toast.error('Vui lòng nhập số thứ tự câu hỏi');
+      return;
+    }
+    if (Number.isNaN(orderNumber)) {
+      toast.error('Số thứ tự câu hỏi phải là số');
+      return;
+    }
+
+    const selectedGroup = groups.find((group) => String(group.dataQuestionId) === String(selectedGroupId));
+    if (!selectedGroup) {
+      toast.error('Không tìm thấy cụm câu hỏi đã chọn');
+      return;
+    }
+    if (hasDuplicateOrderNumber(selectedGroup.questions, orderNumber)) {
+      toast.error('Số thứ tự câu hỏi trong cụm đã tồn tại');
+      return;
+    }
+
     setSavingGroupQuestion(true);
     try {
       const payload = {
-        orderNumber: groupQuestionForm.orderNumber,
+        orderNumber,
         answerCorrect: groupQuestionForm.answerCorrect,
         answerExplain: groupQuestionForm.answerExplain,
         image: groupQuestionForm.image,
@@ -360,24 +483,19 @@ const TestQuestionManager = ({ show, onClose, test }) => {
 
   const handleEditSingleQuestion = (question) => {
     setEditState({ mode: 'single', partId: question.partId, questionId: question.questionId, dataQuestionId: question.dataQuestionId });
-    setSingleForm({
+    setEditSingleForm({
       orderNumber: String(question.orderNumber ?? ''),
       answerCorrect: question.answerCorrect || '',
       answerExplain: question.answerExplain || '',
       image: question.image || '',
-      transcript: question.transcript || '',
-      audio: question.audio || '',
-      questionContent: question.questionContent || '',
-      contentAnswerA: question.contentAnswerA || '',
-      contentAnswerB: question.contentAnswerB || '',
-      contentAnswerC: question.contentAnswerC || '',
-      contentAnswerD: question.contentAnswerD || '',
+      ...normalizeTypeOneFields(question),
+      ...normalizeTypeTwoFields(question),
     });
   };
 
   const handleEditGroup = (group) => {
     setEditState({ mode: 'group', partId: group.partId, questionId: null, dataQuestionId: group.dataQuestionId });
-    setGroupForm({
+    setEditGroupForm({
       orderNumberPart: String(group.orderNumber ?? group.orderNumberPart ?? ''),
       dataQuestion: group.dataQuestion || '',
       transcript: group.transcript || '',
@@ -386,18 +504,14 @@ const TestQuestionManager = ({ show, onClose, test }) => {
 
   const handleEditGroupQuestion = (group, question) => {
     setEditState({ mode: 'group-question', partId: group.partId, questionId: question.questionId, dataQuestionId: group.dataQuestionId });
-    setGroupQuestionForm({
+    setEditGroupQuestionForm({
       orderNumber: String(question.orderNumber ?? ''),
       answerCorrect: question.answerCorrect || '',
       answerExplain: question.answerExplain || '',
       image: question.image || '',
       transcript: '',
       audio: '',
-      questionContent: question.questionContent || '',
-      contentAnswerA: question.contentAnswerA || '',
-      contentAnswerB: question.contentAnswerB || '',
-      contentAnswerC: question.contentAnswerC || '',
-      contentAnswerD: question.contentAnswerD || '',
+      ...normalizeTypeTwoFields(question),
     });
   };
 
@@ -408,33 +522,33 @@ const TestQuestionManager = ({ show, onClose, test }) => {
     try {
       if (editState.mode === 'single') {
         const payload = {
-          orderNumber: singleForm.orderNumber,
-          answerCorrect: singleForm.answerCorrect,
-          answerExplain: singleForm.answerExplain,
-          image: singleForm.image,
+          orderNumber: editSingleForm.orderNumber,
+          answerCorrect: editSingleForm.answerCorrect,
+          answerExplain: editSingleForm.answerExplain,
+          image: editSingleForm.image,
         };
 
         if ([1, 2].includes(Number(editState.partId))) {
           payload.typeOne = {
-            audio: singleForm.audio,
-            transcript: singleForm.transcript,
+            audio: editSingleForm.audio,
+            transcript: editSingleForm.transcript,
           };
         }
 
         if (Number(editState.partId) === 5) {
           payload.typeTwo = {
-            questionContent: singleForm.questionContent,
-            contentAnswerA: singleForm.contentAnswerA,
-            contentAnswerB: singleForm.contentAnswerB,
-            contentAnswerC: singleForm.contentAnswerC,
-            contentAnswerD: singleForm.contentAnswerD,
+            questionContent: editSingleForm.questionContent,
+            contentAnswerA: editSingleForm.contentAnswerA,
+            contentAnswerB: editSingleForm.contentAnswerB,
+            contentAnswerC: editSingleForm.contentAnswerC,
+            contentAnswerD: editSingleForm.contentAnswerD,
           };
         }
 
         await updateSingleQuestion({ testId, questionId: editState.questionId, payload });
         toast.success('Cập nhật câu hỏi thành công');
         setEditState(emptyEditState);
-        resetForms();
+        resetEditForms();
         await loadQuestionsForPart(Number(activePart));
       }
 
@@ -443,38 +557,38 @@ const TestQuestionManager = ({ show, onClose, test }) => {
           testId,
           dataQuestionId: editState.dataQuestionId,
           payload: {
-            orderNumberPart: groupForm.orderNumberPart,
-            dataQuestion: groupForm.dataQuestion,
-            transcript: groupForm.transcript,
+            orderNumberPart: editGroupForm.orderNumberPart,
+            dataQuestion: editGroupForm.dataQuestion,
+            transcript: editGroupForm.transcript,
           },
         });
         toast.success('Cập nhật cụm câu hỏi thành công');
         setEditState(emptyEditState);
-        resetForms();
+        resetEditForms();
         await loadGroups(Number(activePart));
         await loadQuestionsForPart(Number(activePart));
       }
 
       if (editState.mode === 'group-question') {
         const payload = {
-          orderNumber: groupQuestionForm.orderNumber,
-          answerCorrect: groupQuestionForm.answerCorrect,
-          answerExplain: groupQuestionForm.answerExplain,
-          image: groupQuestionForm.image,
+          orderNumber: editGroupQuestionForm.orderNumber,
+          answerCorrect: editGroupQuestionForm.answerCorrect,
+          answerExplain: editGroupQuestionForm.answerExplain,
+          image: editGroupQuestionForm.image,
         };
 
         payload.typeTwo = {
-          questionContent: groupQuestionForm.questionContent,
-          contentAnswerA: groupQuestionForm.contentAnswerA,
-          contentAnswerB: groupQuestionForm.contentAnswerB,
-          contentAnswerC: groupQuestionForm.contentAnswerC,
-          contentAnswerD: groupQuestionForm.contentAnswerD,
+          questionContent: editGroupQuestionForm.questionContent,
+          contentAnswerA: editGroupQuestionForm.contentAnswerA,
+          contentAnswerB: editGroupQuestionForm.contentAnswerB,
+          contentAnswerC: editGroupQuestionForm.contentAnswerC,
+          contentAnswerD: editGroupQuestionForm.contentAnswerD,
         };
 
         await updateSingleQuestion({ testId, questionId: editState.questionId, payload });
         toast.success('Cập nhật câu hỏi trong cụm thành công');
         setEditState(emptyEditState);
-        resetForms();
+        resetEditForms();
         await loadGroups(Number(activePart));
         await loadQuestionsForPart(Number(activePart));
       }
@@ -543,19 +657,23 @@ const TestQuestionManager = ({ show, onClose, test }) => {
               />
             </div>
 
-            <div className="flex flex-col gap-2">
-              <label className="font-semibold text-gray-700">Ảnh câu hỏi (nếu có)</label>
-              <input type="file" accept="image/*" onChange={(e) => handleUploadFile(e.target.files?.[0], 'image', 'single')} />
-              {singleForm.image && <span className="text-sm text-gray-500">{singleForm.image}</span>}
-            </div>
+            <FileUploadField
+              label="Ảnh câu hỏi (nếu có)"
+              accept="image/*"
+              icon="fa-solid fa-image"
+              value={singleForm.image}
+              onChange={(e) => handleUploadFile(e.target.files?.[0], 'image', 'single')}
+            />
 
             {[1, 2].includes(Number(activePart)) && (
               <>
-                <div className="flex flex-col gap-2">
-                  <label className="font-semibold text-gray-700">Audio câu hỏi (Part 1-2)</label>
-                  <input type="file" accept="audio/*" onChange={(e) => handleUploadFile(e.target.files?.[0], 'audio', 'single')} />
-                  {singleForm.audio && <span className="text-sm text-gray-500">{singleForm.audio}</span>}
-                </div>
+                <FileUploadField
+                  label="Audio câu hỏi (Part 1-2)"
+                  accept="audio/*"
+                  icon="fa-solid fa-music"
+                  value={singleForm.audio}
+                  onChange={(e) => handleUploadFile(e.target.files?.[0], 'audio', 'single')}
+                />
                 <textarea
                   className="p-3 border rounded-lg"
                   rows={5}
@@ -630,23 +748,24 @@ const TestQuestionManager = ({ show, onClose, test }) => {
               <p className="text-sm text-gray-500">
                 {Number(activePart) <= 4
                   ? 'Part 3-4: nhập/tải audio dùng chung cho cụm + transcript (nếu có).'
-                  : 'Part 6-7: nhập passage dùng chung cho cụm.'}
+                  : 'Part 6-7: chọn file image dùng chung cho cụm.'}
               </p>
 
               {Number(activePart) <= 4 ? (
-                <input
-                  className="p-3 border rounded-lg w-full"
-                  placeholder="Đường dẫn audio dùng chung (hoặc upload bên dưới)"
+                <FileUploadField
+                  label="Audio dùng chung"
+                  accept="audio/*"
+                  icon="fa-solid fa-music"
                   value={groupForm.dataQuestion}
-                  onChange={(e) => setGroupForm((p) => ({ ...p, dataQuestion: e.target.value }))}
+                  onChange={(e) => handleUploadFile(e.target.files?.[0], 'dataQuestion', 'group')}
                 />
               ) : (
-                <textarea
-                  className="p-3 border rounded-lg w-full"
-                  rows={4}
-                  placeholder="Nội dung passage dùng chung"
+                <FileUploadField
+                  label="File image dùng chung"
+                  accept="image/*"
+                  icon="fa-solid fa-image"
                   value={groupForm.dataQuestion}
-                  onChange={(e) => setGroupForm((p) => ({ ...p, dataQuestion: e.target.value }))}
+                  onChange={(e) => handleUploadFile(e.target.files?.[0], 'dataQuestion', 'group')}
                 />
               )}
 
@@ -659,12 +778,6 @@ const TestQuestionManager = ({ show, onClose, test }) => {
                   onChange={(e) => setGroupForm((p) => ({ ...p, orderNumberPart: e.target.value }))}
                 />
               </div>
-
-              {Number(activePart) <= 4 && (
-                <div>
-                  <input type="file" accept="audio/*" onChange={(e) => handleUploadFile(e.target.files?.[0], 'dataQuestion', 'group')} />
-                </div>
-              )}
 
               <textarea
                 className="p-3 border rounded-lg w-full"
@@ -747,11 +860,13 @@ const TestQuestionManager = ({ show, onClose, test }) => {
                     onChange={(e) => setGroupQuestionForm((p) => ({ ...p, answerExplain: e.target.value }))}
                   />
 
-                  <div>
-                    <label className="font-semibold text-gray-700">Ảnh câu hỏi (nếu có)</label>
-                    <input type="file" accept="image/*" onChange={(e) => handleUploadFile(e.target.files?.[0], 'image', 'groupQuestion')} />
-                    {groupQuestionForm.image && <span className="text-sm text-gray-500">{groupQuestionForm.image}</span>}
-                  </div>
+                  <FileUploadField
+                    label="Ảnh câu hỏi (nếu có)"
+                    accept="image/*"
+                    icon="fa-solid fa-image"
+                    value={groupQuestionForm.image}
+                    onChange={(e) => handleUploadFile(e.target.files?.[0], 'image', 'groupQuestion')}
+                  />
 
                   {[3, 4].includes(Number(activePart)) && (
                     <>
@@ -797,36 +912,40 @@ const TestQuestionManager = ({ show, onClose, test }) => {
           <div className="mt-6 border-t pt-4">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-xl font-bold">Chỉnh sửa</h3>
-              <Button text="Đóng" variant="default" size="sm" onClick={() => { setEditState(emptyEditState); resetForms(); }} />
+              <Button text="Đóng" variant="default" size="sm" onClick={() => { setEditState(emptyEditState); resetEditForms(); }} />
             </div>
 
             {editState.mode === 'single' && (
               <div className="grid gap-3">
-                <input className="p-3 border rounded-lg" value={singleForm.orderNumber} onChange={(e) => setSingleForm((p) => ({ ...p, orderNumber: e.target.value }))} placeholder="Câu hỏi số" />
-                <input className="p-3 border rounded-lg" value={singleForm.answerCorrect} onChange={(e) => setSingleForm((p) => ({ ...p, answerCorrect: e.target.value }))} placeholder="Đáp án đúng" />
-                <input className="p-3 border rounded-lg" value={singleForm.answerExplain} onChange={(e) => setSingleForm((p) => ({ ...p, answerExplain: e.target.value }))} placeholder="Giải thích" />
-                <div className="flex flex-col gap-2">
-                  <label className="font-semibold text-gray-700">Ảnh câu hỏi</label>
-                  <input type="file" accept="image/*" onChange={(e) => handleUploadFile(e.target.files?.[0], 'image', 'single')} />
-                  {singleForm.image && <span className="text-sm text-gray-500">{singleForm.image}</span>}
-                </div>
+                <input className="p-3 border rounded-lg" value={editSingleForm.orderNumber} onChange={(e) => setEditSingleForm((p) => ({ ...p, orderNumber: e.target.value }))} placeholder="Câu hỏi số" />
+                <input className="p-3 border rounded-lg" value={editSingleForm.answerCorrect} onChange={(e) => setEditSingleForm((p) => ({ ...p, answerCorrect: e.target.value }))} placeholder="Đáp án đúng" />
+                <input className="p-3 border rounded-lg" value={editSingleForm.answerExplain} onChange={(e) => setEditSingleForm((p) => ({ ...p, answerExplain: e.target.value }))} placeholder="Giải thích" />
+                <FileUploadField
+                  label="Ảnh câu hỏi"
+                  accept="image/*"
+                  icon="fa-solid fa-image"
+                  value={editSingleForm.image}
+                  onChange={(e) => handleUploadFile(e.target.files?.[0], 'image', 'edit-single')}
+                />
                 {[1, 2].includes(Number(editState.partId)) && (
                   <>
-                    <div className="flex flex-col gap-2">
-                      <label className="font-semibold text-gray-700">Audio câu hỏi</label>
-                      <input type="file" accept="audio/*" onChange={(e) => handleUploadFile(e.target.files?.[0], 'audio', 'single')} />
-                      {singleForm.audio && <span className="text-sm text-gray-500">{singleForm.audio}</span>}
-                    </div>
-                    <textarea className="p-3 border rounded-lg" rows={5} placeholder="Transcript" value={singleForm.transcript} onChange={(e) => setSingleForm((p) => ({ ...p, transcript: e.target.value }))} />
+                    <FileUploadField
+                      label="Audio câu hỏi"
+                      accept="audio/*"
+                      icon="fa-solid fa-music"
+                      value={editSingleForm.audio}
+                      onChange={(e) => handleUploadFile(e.target.files?.[0], 'audio', 'edit-single')}
+                    />
+                    <textarea className="p-3 border rounded-lg" rows={5} placeholder="Transcript" value={editSingleForm.transcript} onChange={(e) => setEditSingleForm((p) => ({ ...p, transcript: e.target.value }))} />
                   </>
                 )}
                 {Number(editState.partId) === 5 && (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <input className="p-3 border rounded-lg" value={singleForm.questionContent} onChange={(e) => setSingleForm((p) => ({ ...p, questionContent: e.target.value }))} placeholder="Nội dung câu hỏi" />
-                    <input className="p-3 border rounded-lg" value={singleForm.contentAnswerA} onChange={(e) => setSingleForm((p) => ({ ...p, contentAnswerA: e.target.value }))} placeholder="Đáp án A" />
-                    <input className="p-3 border rounded-lg" value={singleForm.contentAnswerB} onChange={(e) => setSingleForm((p) => ({ ...p, contentAnswerB: e.target.value }))} placeholder="Đáp án B" />
-                    <input className="p-3 border rounded-lg" value={singleForm.contentAnswerC} onChange={(e) => setSingleForm((p) => ({ ...p, contentAnswerC: e.target.value }))} placeholder="Đáp án C" />
-                    <input className="p-3 border rounded-lg" value={singleForm.contentAnswerD} onChange={(e) => setSingleForm((p) => ({ ...p, contentAnswerD: e.target.value }))} placeholder="Đáp án D" />
+                    <input className="p-3 border rounded-lg" value={editSingleForm.questionContent} onChange={(e) => setEditSingleForm((p) => ({ ...p, questionContent: e.target.value }))} placeholder="Nội dung câu hỏi" />
+                    <input className="p-3 border rounded-lg" value={editSingleForm.contentAnswerA} onChange={(e) => setEditSingleForm((p) => ({ ...p, contentAnswerA: e.target.value }))} placeholder="Đáp án A" />
+                    <input className="p-3 border rounded-lg" value={editSingleForm.contentAnswerB} onChange={(e) => setEditSingleForm((p) => ({ ...p, contentAnswerB: e.target.value }))} placeholder="Đáp án B" />
+                    <input className="p-3 border rounded-lg" value={editSingleForm.contentAnswerC} onChange={(e) => setEditSingleForm((p) => ({ ...p, contentAnswerC: e.target.value }))} placeholder="Đáp án C" />
+                    <input className="p-3 border rounded-lg" value={editSingleForm.contentAnswerD} onChange={(e) => setEditSingleForm((p) => ({ ...p, contentAnswerD: e.target.value }))} placeholder="Đáp án D" />
                   </div>
                 )}
                 <div className="flex justify-end">
@@ -837,14 +956,25 @@ const TestQuestionManager = ({ show, onClose, test }) => {
 
             {editState.mode === 'group' && (
               <div className="grid gap-3">
-                <input className="p-3 border rounded-lg" value={groupForm.orderNumberPart} onChange={(e) => setGroupForm((p) => ({ ...p, orderNumberPart: e.target.value }))} placeholder="Số thứ tự cụm" />
-                <textarea className="p-3 border rounded-lg" rows={4} value={groupForm.dataQuestion} onChange={(e) => setGroupForm((p) => ({ ...p, dataQuestion: e.target.value }))} placeholder="Nội dung cụm" />
-                {Number(editState.partId) <= 4 && (
-                  <div>
-                    <input type="file" accept="audio/*" onChange={(e) => handleUploadFile(e.target.files?.[0], 'dataQuestion', 'group')} />
-                  </div>
+                <input className="p-3 border rounded-lg" value={editGroupForm.orderNumberPart} onChange={(e) => setEditGroupForm((p) => ({ ...p, orderNumberPart: e.target.value }))} placeholder="Số thứ tự cụm" />
+                {Number(editState.partId) <= 4 ? (
+                  <FileUploadField
+                    label="Chọn audio dùng chung"
+                    accept="audio/*"
+                    icon="fa-solid fa-music"
+                    value={editGroupForm.dataQuestion}
+                    onChange={(e) => handleUploadFile(e.target.files?.[0], 'dataQuestion', 'edit-group')}
+                  />
+                ) : (
+                  <FileUploadField
+                    label="File image dùng chung"
+                    accept="image/*"
+                    icon="fa-solid fa-image"
+                    value={editGroupForm.dataQuestion}
+                    onChange={(e) => handleUploadFile(e.target.files?.[0], 'dataQuestion', 'edit-group')}
+                  />
                 )}
-                <textarea className="p-3 border rounded-lg" rows={3} value={groupForm.transcript} onChange={(e) => setGroupForm((p) => ({ ...p, transcript: e.target.value }))} placeholder="Transcript / ghi chú cụm" />
+                <textarea className="p-3 border rounded-lg" rows={3} value={editGroupForm.transcript} onChange={(e) => setEditGroupForm((p) => ({ ...p, transcript: e.target.value }))} placeholder="Transcript / ghi chú cụm" />
                 <div className="flex justify-end">
                   <Button text="Lưu chỉnh sửa" variant="primary" size="sm" onClick={handleSaveEdit} />
                 </div>
@@ -853,20 +983,22 @@ const TestQuestionManager = ({ show, onClose, test }) => {
 
             {editState.mode === 'group-question' && (
               <div className="grid gap-3">
-                <input className="p-3 border rounded-lg" value={groupQuestionForm.orderNumber} onChange={(e) => setGroupQuestionForm((p) => ({ ...p, orderNumber: e.target.value }))} placeholder="Câu hỏi số" />
-                <input className="p-3 border rounded-lg" value={groupQuestionForm.answerCorrect} onChange={(e) => setGroupQuestionForm((p) => ({ ...p, answerCorrect: e.target.value }))} placeholder="Đáp án đúng" />
-                <input className="p-3 border rounded-lg" value={groupQuestionForm.answerExplain} onChange={(e) => setGroupQuestionForm((p) => ({ ...p, answerExplain: e.target.value }))} placeholder="Giải thích" />
-                <div className="flex flex-col gap-2">
-                  <label className="font-semibold text-gray-700">Ảnh câu hỏi</label>
-                  <input type="file" accept="image/*" onChange={(e) => handleUploadFile(e.target.files?.[0], 'image', 'groupQuestion')} />
-                  {groupQuestionForm.image && <span className="text-sm text-gray-500">{groupQuestionForm.image}</span>}
-                </div>
-                <input className="p-3 border rounded-lg" value={groupQuestionForm.questionContent} onChange={(e) => setGroupQuestionForm((p) => ({ ...p, questionContent: e.target.value }))} placeholder="Nội dung câu hỏi" />
+                <input className="p-3 border rounded-lg" value={editGroupQuestionForm.orderNumber} onChange={(e) => setEditGroupQuestionForm((p) => ({ ...p, orderNumber: e.target.value }))} placeholder="Câu hỏi số" />
+                <input className="p-3 border rounded-lg" value={editGroupQuestionForm.answerCorrect} onChange={(e) => setEditGroupQuestionForm((p) => ({ ...p, answerCorrect: e.target.value }))} placeholder="Đáp án đúng" />
+                <input className="p-3 border rounded-lg" value={editGroupQuestionForm.answerExplain} onChange={(e) => setEditGroupQuestionForm((p) => ({ ...p, answerExplain: e.target.value }))} placeholder="Giải thích" />
+                <FileUploadField
+                  label="Ảnh câu hỏi"
+                  accept="image/*"
+                  icon="fa-solid fa-image"
+                  value={editGroupQuestionForm.image}
+                  onChange={(e) => handleUploadFile(e.target.files?.[0], 'image', 'edit-groupQuestion')}
+                />
+                <input className="p-3 border rounded-lg" value={editGroupQuestionForm.questionContent} onChange={(e) => setEditGroupQuestionForm((p) => ({ ...p, questionContent: e.target.value }))} placeholder="Nội dung câu hỏi" />
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <input className="p-3 border rounded-lg" value={groupQuestionForm.contentAnswerA} onChange={(e) => setGroupQuestionForm((p) => ({ ...p, contentAnswerA: e.target.value }))} placeholder="Đáp án A" />
-                  <input className="p-3 border rounded-lg" value={groupQuestionForm.contentAnswerB} onChange={(e) => setGroupQuestionForm((p) => ({ ...p, contentAnswerB: e.target.value }))} placeholder="Đáp án B" />
-                  <input className="p-3 border rounded-lg" value={groupQuestionForm.contentAnswerC} onChange={(e) => setGroupQuestionForm((p) => ({ ...p, contentAnswerC: e.target.value }))} placeholder="Đáp án C" />
-                  <input className="p-3 border rounded-lg" value={groupQuestionForm.contentAnswerD} onChange={(e) => setGroupQuestionForm((p) => ({ ...p, contentAnswerD: e.target.value }))} placeholder="Đáp án D" />
+                  <input className="p-3 border rounded-lg" value={editGroupQuestionForm.contentAnswerA} onChange={(e) => setEditGroupQuestionForm((p) => ({ ...p, contentAnswerA: e.target.value }))} placeholder="Đáp án A" />
+                  <input className="p-3 border rounded-lg" value={editGroupQuestionForm.contentAnswerB} onChange={(e) => setEditGroupQuestionForm((p) => ({ ...p, contentAnswerB: e.target.value }))} placeholder="Đáp án B" />
+                  <input className="p-3 border rounded-lg" value={editGroupQuestionForm.contentAnswerC} onChange={(e) => setEditGroupQuestionForm((p) => ({ ...p, contentAnswerC: e.target.value }))} placeholder="Đáp án C" />
+                  <input className="p-3 border rounded-lg" value={editGroupQuestionForm.contentAnswerD} onChange={(e) => setEditGroupQuestionForm((p) => ({ ...p, contentAnswerD: e.target.value }))} placeholder="Đáp án D" />
                 </div>
                 <div className="flex justify-end">
                   <Button text="Lưu chỉnh sửa" variant="primary" size="sm" onClick={handleSaveEdit} />
