@@ -201,14 +201,14 @@ const Login = () => {
             )}
           </div>
           {/* Quên mật khẩu */}
-          <div className="text-right text-sm">
+          {/* <div className="text-right text-sm">
             <Link
               to="/forgotpassword"
               className="text-[#49719C] font-semibold hover:underline"
             >
               Quên mật khẩu?
             </Link>
-          </div>
+          </div> */}
         </div>
         {/* Đăng nhập */}
         <Button
