@@ -16,15 +16,15 @@ const Button = ({
 }) => {
   const defaultVariantClasses = {
     primary: {
-      bg: "bg-[#2C99E2]",
+      bg: "bg-[#25B379]",
       text: "text-white",
-      border: "border border-[#2C99E2]",
-      hover: "hover:bg-[#2C99E2]/80",
+      border: "border border-[#25B379]",
+      hover: "hover:bg-[#25B379]/80",
     },
     default: {
       bg: "bg-white",
-      text: "text-[#49719C]",
-      border: "border border-[#49719C]",
+      text: "text-[#2C8F5F]",
+      border: "border border-[#2C8F5F]",
       hover: "hover:bg-gray-100",
     },
     delete: {

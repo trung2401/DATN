@@ -83,11 +83,11 @@ const Register = () => {
               value={formData.userName}
               onChange={handleChange}
               placeholder="Nhập tên đăng nhập"
-              className={`w-full text-[#49719C] font-medium px-4 py-2.5 placeholder-[#49719C] border ${
+              className={`w-full text-[#2C8F5F] font-medium px-4 py-2.5 placeholder-[#2C8F5F] border ${
                 errors.userName
                   ? "border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
-                  : "border-[#CEDBE8]"
-              } rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7BA4CE]`}
+                  : "border-[#D0E8DF]"
+              } rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4AB88A]`}
             />
             {errors.userName && (
               <div className="text-sm text-red-500 font-medium">
@@ -107,11 +107,11 @@ const Register = () => {
               value={formData.email}
               onChange={handleChange}
               placeholder="Nhập email"
-              className={`w-full text-[#49719C] font-medium px-4 py-2.5 placeholder-[#49719C] border ${
+              className={`w-full text-[#2C8F5F] font-medium px-4 py-2.5 placeholder-[#2C8F5F] border ${
                 errors.email
                   ? "border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
-                  : "border-[#CEDBE8]"
-              } rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7BA4CE]`}
+                  : "border-[#D0E8DF]"
+              } rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4AB88A]`}
             />
             {errors.email && (
               <div className="text-sm text-red-500 font-medium">
@@ -132,11 +132,11 @@ const Register = () => {
                 value={formData.password}
                 onChange={handleChange}
                 placeholder="Nhập ít nhất 8 ký tự"
-                className={`w-full px-4 py-2.5 text-[#49719C] font-medium placeholder-[#49719C] border ${
+                className={`w-full px-4 py-2.5 text-[#2C8F5F] font-medium placeholder-[#2C8F5F] border ${
                   errors.password
                     ? "border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
-                    : "border-[#CEDBE8]"
-                } rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7BA4CE]`}
+                    : "border-[#D0E8DF]"
+                } rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4AB88A]`}
               />
               <span
                 className="absolute right-4 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500"
@@ -168,11 +168,11 @@ const Register = () => {
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 placeholder="Nhập mật khẩu xác nhận"
-                className={`w-full px-4 py-2.5 text-[#49719C] font-medium placeholder-[#49719C] border ${
+                className={`w-full px-4 py-2.5 text-[#2C8F5F] font-medium placeholder-[#2C8F5F] border ${
                   errors.confirmPassword
                     ? "border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
-                    : "border-[#CEDBE8]"
-                } rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7BA4CE]`}
+                    : "border-[#D0E8DF]"
+                } rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4AB88A]`}
               />
               <span
                 className="absolute right-4 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500"
@@ -204,12 +204,12 @@ const Register = () => {
 
         {/* Login Link */}
         <div className="text-center text-sm">
-          <span className="text-muted-foreground text-[#49719C]">
+          <span className="text-muted-foreground text-[#2C8F5F]">
             Bạn đã có tài khoản?{" "}
           </span>
           <Link
             to="/login"
-            className="text-[#49719C] font-bold hover:underline"
+            className="text-[#2C8F5F] font-bold hover:underline"
           >
             Đăng nhập
           </Link>

@@ -33,7 +33,7 @@ const SideBarMobile = ({
         onClick={(e) => e.stopPropagation()} 
       >
         <div className="fixed w-full px-5 py-4 bg-white rounded-tr-2xl">
-            <span className="flex w-full items-center justify-center font-bold border-2 rounded-lg border-[#2C99E2] px-3 py-2.5">
+            <span className="flex w-full items-center justify-center font-bold border-2 rounded-lg border-[#25B379] px-3 py-2.5">
                 {answeredQuestions}/200
             </span>
         </div>
@@ -66,12 +66,12 @@ const SideBarMobile = ({
                               !isStarted
                                 ? "opacity-50 border-gray-300 text-gray-400 cursor-not-allowed bg-gray-50"
                                 : isAnswered
-                                ? "bg-[#2C99E2] text-white border-[#2C99E2]"
+                                ? "bg-[#25B379] text-white border-[#25B379]"
                                 : isSelected
-                                ? "bg-blue-100 border-[#2C99E2]"
+                                ? "bg-blue-100 border-[#25B379]"
                                 : isInCurrentGroup
-                                ? "border-[#2C99E2] bg-white hover:bg-blue-50"
-                                : "border-gray-300 bg-white hover:border-[#2C99E2] hover:bg-blue-50"
+                                ? "border-[#25B379] bg-white hover:bg-blue-50"
+                                : "border-gray-300 bg-white hover:border-[#25B379] hover:bg-blue-50"
                             }
                           `}
                         >

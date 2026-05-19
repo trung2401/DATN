@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Logo from "../assets/images/Logo_toeic.png";
+import Logo from "../assets/images/TOEIC_GREEN.png";
 import { Link, useNavigate, NavLink } from "react-router-dom";
 import Button from "../components/Button.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -70,8 +70,8 @@ const Header = () => {
               to="/"
               className={({ isActive }) =>
                 isActive
-                  ? "text-[#2C99E2] font-bold border-b-2 border-[#2C99E2] py-2"
-                  : "text-gray-600 font-semibold py-2 hover:text-[#2C99E2] hover:font-bold"
+                  ? "text-[#25B379] font-bold border-b-2 border-[#25B379] py-2"
+                  : "text-gray-600 font-semibold py-2 hover:text-[#25B379] hover:font-bold"
               }
             >
               Trang chủ
@@ -80,8 +80,8 @@ const Header = () => {
               to="/exam"
               className={({ isActive }) =>
                 isActive
-                  ? "text-[#2C99E2] font-bold border-b-2 border-[#2C99E2] py-2"
-                  : "text-gray-600 font-semibold py-2 hover:text-[#2C99E2] hover:font-bold"
+                  ? "text-[#25B379] font-bold border-b-2 border-[#25B379] py-2"
+                  : "text-gray-600 font-semibold py-2 hover:text-[#25B379] hover:font-bold"
               }
             >
               Đề thi
@@ -90,8 +90,8 @@ const Header = () => {
               to="/course"
               className={({ isActive }) =>
                 isActive
-                  ? "text-[#2C99E2] font-bold border-b-2 border-[#2C99E2] py-2"
-                  : "text-gray-600 font-semibold py-2 hover:text-[#2C99E2] hover:font-bold"
+                  ? "text-[#25B379] font-bold border-b-2 border-[#25B379] py-2"
+                  : "text-gray-600 font-semibold py-2 hover:text-[#25B379] hover:font-bold"
               }
             >
               Khóa học
@@ -100,8 +100,8 @@ const Header = () => {
               to="/note"
               className={({ isActive }) =>
                 isActive
-                  ? "text-[#2C99E2] font-bold border-b-2 border-[#2C99E2] py-2"
-                  : "text-gray-600 font-semibold py-2 hover:text-[#2C99E2] hover:font-bold"
+                  ? "text-[#25B379] font-bold border-b-2 border-[#25B379] py-2"
+                  : "text-gray-600 font-semibold py-2 hover:text-[#25B379] hover:font-bold"
               }
             >
               Ghi chú
@@ -111,8 +111,8 @@ const Header = () => {
                 to="/chat"
                 className={({ isActive }) =>
                   isActive
-                    ? "text-[#2C99E2] font-bold border-b-2 border-[#2C99E2] py-2"
-                    : "text-gray-600 font-semibold py-2 hover:text-[#2C99E2] hover:font-bold"
+                    ? "text-[#25B379] font-bold border-b-2 border-[#25B379] py-2"
+                    : "text-gray-600 font-semibold py-2 hover:text-[#25B379] hover:font-bold"
                 }
               >
                 Chat
@@ -230,8 +230,8 @@ const Header = () => {
                 onClick={toggleMobileMenu}
                 className={({ isActive }) =>
                   isActive
-                    ? "bg-[#2C99E2] text-white font-bold px-4 py-2 rounded-lg"
-                    : "text-gray-600 font-medium hover:text-[#2C99E2] px-4 py-2 rounded-lg"
+                    ? "bg-[#25B379] text-white font-bold px-4 py-2 rounded-lg"
+                    : "text-gray-600 font-medium hover:text-[#25B379] px-4 py-2 rounded-lg"
                 }
               >
                 Trang chủ
@@ -241,8 +241,8 @@ const Header = () => {
                 onClick={toggleMobileMenu}
                 className={({ isActive }) =>
                   isActive
-                    ? "bg-[#2C99E2] text-white font-bold px-4 py-2 rounded-lg"
-                    : "text-gray-600 font-medium hover:text-[#2C99E2] px-4 py-2 rounded-lg"
+                    ? "bg-[#25B379] text-white font-bold px-4 py-2 rounded-lg"
+                    : "text-gray-600 font-medium hover:text-[#25B379] px-4 py-2 rounded-lg"
                 }
               >
                 Đề thi
@@ -252,8 +252,8 @@ const Header = () => {
                 onClick={toggleMobileMenu}
                 className={({ isActive }) =>
                   isActive
-                    ? "bg-[#2C99E2] text-white font-bold px-4 py-2 rounded-lg"
-                    : "text-gray-600 font-medium hover:text-[#2C99E2] px-4 py-2 rounded-lg"
+                    ? "bg-[#25B379] text-white font-bold px-4 py-2 rounded-lg"
+                    : "text-gray-600 font-medium hover:text-[#25B379] px-4 py-2 rounded-lg"
                 }
               >
                 Khóa học
@@ -263,8 +263,8 @@ const Header = () => {
                 onClick={toggleMobileMenu}
                 className={({ isActive }) =>
                   isActive
-                    ? "bg-[#2C99E2] text-white font-bold px-4 py-2 rounded-lg"
-                    : "text-gray-600 font-medium hover:text-[#2C99E2] px-4 py-2 rounded-lg"
+                    ? "bg-[#25B379] text-white font-bold px-4 py-2 rounded-lg"
+                    : "text-gray-600 font-medium hover:text-[#25B379] px-4 py-2 rounded-lg"
                 }
               >
                 Ghi chú
@@ -275,8 +275,8 @@ const Header = () => {
                   onClick={toggleMobileMenu}
                   className={({ isActive }) =>
                     isActive
-                      ? "bg-[#2C99E2] text-white font-bold px-4 py-2 rounded-lg"
-                      : "text-gray-600 font-medium hover:text-[#2C99E2] px-4 py-2 rounded-lg"
+                      ? "bg-[#25B379] text-white font-bold px-4 py-2 rounded-lg"
+                      : "text-gray-600 font-medium hover:text-[#25B379] px-4 py-2 rounded-lg"
                   }
                 >
                   Chat

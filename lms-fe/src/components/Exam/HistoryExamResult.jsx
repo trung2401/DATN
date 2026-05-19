@@ -185,7 +185,7 @@ const HistoryExamResult = () => {
                 <p>
                   <span className="font-semibold">{listeningCorrect}/100</span>{" "}
                   |{" "}
-                  <span className="font-semibold text-[#2C99E2]">
+                  <span className="font-semibold text-[#25B379]">
                     {listeningScore} điểm
                   </span>
                 </p>
@@ -194,7 +194,7 @@ const HistoryExamResult = () => {
                 <p className="text-gray-600">Reading:</p>
                 <p>
                   <span className="font-semibold">{readingCorrect}/100</span> |{" "}
-                  <span className="font-semibold text-[#2C99E2]">
+                  <span className="font-semibold text-[#25B379]">
                     {readingScore} điểm
                   </span>
                 </p>
@@ -203,7 +203,7 @@ const HistoryExamResult = () => {
             <div className="flex items-center justify-center col-span-2 sm:col-span-1">
               <div className="text-center">
                 <p className="text-gray-600">Tổng điểm</p>
-                <p className="text-4xl sm:text-5xl font-extrabold text-[#2C99E2]">
+                <p className="text-4xl sm:text-5xl font-extrabold text-[#25B379]">
                   {totalScore}
                 </p>
               </div>
@@ -239,7 +239,7 @@ const HistoryExamResult = () => {
                 onClick={() => setActivePart(part)}
                 className={`px-2 py-2 text-lg font-semibold cursor-pointer ${
                   activePart === part
-                    ? "text-[#2C99E2] border-b-3 border-[#2C99E2]"
+                    ? "text-[#25B379] border-b-3 border-[#25B379]"
                     : "text-gray-600"
                 } pb-1`}
               >

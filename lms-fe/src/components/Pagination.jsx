@@ -54,10 +54,10 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
           key={index}
           className={`px-3 py-1.5 rounded-md border cursor-pointer
             ${page === currentPage
-              ? 'text-white border border-[#2C99E2] bg-[#2C99E2] font-bold'
+              ? 'text-white border border-[#25B379] bg-[#25B379] font-bold'
               : page === '...'
               ? 'text-gray-600 border-none cursor-default'
-              : 'text-[#49719C] border-[#49719C] hover:bg-gray-100 font-semibold'}
+              : 'text-[#2C8F5F] border-[#2C8F5F] hover:bg-gray-100 font-semibold'}
           `}
           onClick={() => page !== '...' && onPageChange(page)}
           disabled={page === '...'}

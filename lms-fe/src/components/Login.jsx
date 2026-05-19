@@ -152,11 +152,11 @@ const Login = () => {
               placeholder="Nhập tên đăng nhập"
               value={formData.userName}
               onChange={handleChange}
-              className={`w-full text-[#49719C] font-medium px-4 py-2.5 placeholder-[#49719C] border ${
+              className={`w-full text-[#2C8F5F] font-medium px-4 py-2.5 placeholder-[#2C8F5F] border ${
                 formErrors.userName
                   ? "border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
-                  : "border-[#CEDBE8]"
-              } rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7BA4CE] focus:border-[#7BA4CE]`}
+                  : "border-[#D0E8DF]"
+              } rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4AB88A] focus:border-[#4AB88A]`}
             />
             {formErrors.userName && (
               <div className="text-sm text-red-500 font-medium">
@@ -177,11 +177,11 @@ const Login = () => {
                 placeholder="Nhập mật khẩu"
                 value={formData.password}
                 onChange={handleChange}
-                className={`w-full px-4 py-2.5 text-[#49719C] font-medium placeholder-[#49719C] border ${
+                className={`w-full px-4 py-2.5 text-[#2C8F5F] font-medium placeholder-[#2C8F5F] border ${
                   formErrors.password
                     ? "border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
-                    : "border-[#CEDBE8]"
-                } rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7BA4CE] focus:border-[#7BA4CE]`}
+                    : "border-[#D0E8DF]"
+                } rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4AB88A] focus:border-[#4AB88A]`}
               />
               <span
                 className="absolute right-4 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500"
@@ -204,7 +204,7 @@ const Login = () => {
           {/* <div className="text-right text-sm">
             <Link
               to="/forgotpassword"
-              className="text-[#49719C] font-semibold hover:underline"
+              className="text-[#2C8F5F] font-semibold hover:underline"
             >
               Quên mật khẩu?
             </Link>
@@ -221,12 +221,12 @@ const Login = () => {
 
         {/* Đăng ký */}
         <div className="text-center text-sm">
-          <span className="text-muted-foreground text-[#49719C]">
+          <span className="text-muted-foreground text-[#2C8F5F]">
             Bạn chưa có tài khoản?{" "}
           </span>
           <Link
             to="/register"
-            className="text-[#49719C] font-bold hover:underline"
+            className="text-[#2C8F5F] font-bold hover:underline"
           >
             Đăng ký
           </Link>

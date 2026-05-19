@@ -342,7 +342,7 @@ const ExamForm = ({ show, onClose, partNumber, questionData }) => {
                 onClick={() => setActiveTab(part)}
                 className={`px-2 py-2 text-lg font-semibold cursor-pointer ${
                   activeTab === part
-                    ? "text-[#2C99E2] border-b-3 border-[#2C99E2]"
+                    ? "text-[#25B379] border-b-3 border-[#25B379]"
                     : "text-gray-600"
                 } pb-1`}
               >

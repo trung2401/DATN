@@ -106,7 +106,7 @@ const ManageCourseTeacher = () => {
                 {currentCourses.map((course) => (
                   <tr key={course.courseId} className="hover:bg-gray-100">
                     <td className="px-4 py-4 text-gray-600 font-semibold">{course.courseId}</td>
-                    <td className="px-4 py-4 font-bold text-[#2C99E2]">{course.courseName}</td>
+                    <td className="px-4 py-4 font-bold text-[#25B379]">{course.courseName}</td>
                     <td className="px-4 py-4 text-gray-700 font-medium">{course.teacherName}</td>
                     <td className="px-4 py-4">
                       <span

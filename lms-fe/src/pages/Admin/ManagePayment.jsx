@@ -124,13 +124,13 @@ const ManagePayment = () => {
             <div className="flex border-2 border-gray-200 rounded-xl space-x-5 shadow-md p-5 items-center justify-around">
               <div className="flex gap-2 items-center justify-center text-md text-gray-600 font-semibold">
                 <span>Tổng số giao dịch:</span>
-                <span className="font-bold text-[#2C99E2]">
+                <span className="font-bold text-[#25B379]">
                   {Number(revenue?.numberTransaction || 0)}
                 </span>
               </div>
               <div className="flex gap-2 items-center text-md justify-center text-gray-600 font-semibold">
                 <span>Doanh thu:</span>
-                <span className="font-bold text-[#2C99E2]">
+                <span className="font-bold text-[#25B379]">
                   {formatCurrency(Number(revenue?.totalAmount || 0))}
                 </span>
               </div>
@@ -186,10 +186,10 @@ const ManagePayment = () => {
                       <td className="px-4 py-4 text-gray-600 font-semibold">
                         {payment.courseId ?? "N/A"}
                       </td>
-                      <td className="px-4 py-4 font-bold text-[#2C99E2]">
+                      <td className="px-4 py-4 font-bold text-[#25B379]">
                         {formatCurrency(payment.totalAmount)}
                       </td>
-                      <td className="px-4 py-4 font-bold text-[#2C99E2]">
+                      <td className="px-4 py-4 font-bold text-[#25B379]">
                         {formatCurrency(payment.totalAmountOfTeacher)}
                       </td>
                       <td className="px-4 py-4 text-gray-600 font-semibold">

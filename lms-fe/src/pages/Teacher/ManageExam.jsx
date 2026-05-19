@@ -168,7 +168,7 @@ const ManageExamTeacher = () => {
                 {currentExams.map((exam) => (
                   <tr key={exam.idTest} className="hover:bg-gray-100">
                     <td className="px-4 py-4 text-gray-600 font-semibold">{exam.idTest}</td>
-                    <td className="px-4 py-4 font-bold text-[#2C99E2]">{exam.testName}</td>
+                    <td className="px-4 py-4 font-bold text-[#25B379]">{exam.testName}</td>
                     <td className="px-4 py-4">
                       <span
                         className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-bold ${

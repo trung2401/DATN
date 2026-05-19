@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Logo from "../assets/images/Logo_toeic.png";
+import Logo from "../assets/images/TOEIC_GREEN.png";
 import { authLogout } from '../service/authService';
 import { getUser } from '../service/userService';
 import { useDispatch } from 'react-redux';
@@ -17,8 +17,8 @@ const TeacherLayout = ({ children }) => {
   const linkClass = ({ isActive }) =>
     `px-4 py-2 rounded transition-all duration-200 transform ${
       isActive
-        ? 'bg-[#E6F2FF] text-[#2C99E2] font-bold'
-        : 'text-gray-600 font-bold hover:bg-gray-100 hover:text-[#2C99E2] hover:scale-[1.02]'
+        ? 'bg-[#E6F2FF] text-[#25B379] font-bold'
+        : 'text-gray-600 font-bold hover:bg-gray-100 hover:text-[#25B379] hover:scale-[1.02]'
     }`;
 
   const toggleDropdown = () => setDropdownOpen((prev) => !prev);
@@ -107,7 +107,7 @@ const TeacherLayout = ({ children }) => {
               className="flex items-center gap-3 p-2 rounded-lg bg-gray-100 cursor-pointer"
               onClick={toggleDropdown}
             >
-              <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#2C99E2] text-white font-bold">
+              <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#25B379] text-white font-bold">
                 GV
               </div>
               <div className="flex flex-col">

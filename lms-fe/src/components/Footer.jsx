@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from "react-router-dom";
-import Logo from "../assets/images/Logo_toeic_gray.png";
+import Logo from "../assets/images/Toeic_green_gray.png";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const Footer = () => {
@@ -33,17 +33,17 @@ const Footer = () => {
             <h3 className="font-semibold text-base">Liên kết</h3>
             <div className="space-y-2 text-sm">
               <p>
-                <Link href="/" className="text-gray-600 hover:text-[#2C99E2]">
+                <Link href="/" className="text-gray-600 hover:text-[#25B379]">
                   Giới thiệu
                 </Link>
               </p>
               <p>
-                <Link href="/" className="text-gray-600 hover:text-[#2C99E2]">
+                <Link href="/" className="text-gray-600 hover:text-[#25B379]">
                   Chính sách bảo mật
                 </Link>
               </p>
               <p>
-                <Link href="/" className="text-gray-600 hover:text-[#2C99E2]">
+                <Link href="/" className="text-gray-600 hover:text-[#25B379]">
                   Hỗ trợ
                 </Link>
               </p>
@@ -54,32 +54,32 @@ const Footer = () => {
           <div className="space-y-4">
             <h3 className="font-semibold text-base">Liên hệ</h3>
             <div className="flex space-x-3">
-              <div className='w-10 h-10 flex items-center justify-center bg-white border border-[#49719c] p-2 rounded-full hover:bg-gray-100 transition-all duration-300 hover:scale-110'>
+              <div className='w-10 h-10 flex items-center justify-center bg-white border border-[#25B379] p-2 rounded-full hover:bg-gray-100 transition-all duration-300 hover:scale-110'>
                 <FontAwesomeIcon 
                   icon="fa-brands fa-facebook" 
                   size="xl" 
-                  style={{color: "#49719c"}} 
+                  style={{color: "#25B379"}} 
                 />
               </div>
-              <div className='w-10 h-10 flex items-center justify-center bg-white border border-[#49719c] p-2 rounded-full hover:bg-gray-100 transition-all duration-300 hover:scale-110 '>
+              <div className='w-10 h-10 flex items-center justify-center bg-white border border-[#25B379] p-2 rounded-full hover:bg-gray-100 transition-all duration-300 hover:scale-110 '>
                 <FontAwesomeIcon 
                   icon="fa-brands fa-linkedin" 
                   size="xl" 
-                  style={{color: "#49719c"}} 
+                  style={{color: "#25B379"}} 
                 />
               </div>
-              <div className='w-10 h-10 flex items-center justify-center bg-white border border-[#49719c] p-2 rounded-full hover:bg-gray-100 transition-all duration-300 hover:scale-110'>
+              <div className='w-10 h-10 flex items-center justify-center bg-white border border-[#25B379] p-2 rounded-full hover:bg-gray-100 transition-all duration-300 hover:scale-110'>
                 <FontAwesomeIcon 
                   icon="fa-brands fa-instagram" 
                   size="xl" 
-                  style={{color: "#49719c"}} 
+                  style={{color: "#25B379"}} 
                 />
               </div>
-              <div className='w-10 h-10 flex items-center justify-center bg-white border border-[#49719c] p-2 rounded-full hover:bg-gray-100 transition-all duration-300 hover:scale-110 '>
+              <div className='w-10 h-10 flex items-center justify-center bg-white border border-[#25B379] p-2 rounded-full hover:bg-gray-100 transition-all duration-300 hover:scale-110 '>
                 <FontAwesomeIcon 
                   icon="fa-brands fa-square-x-twitter" 
                   size="xl" 
-                  style={{color: "#49719c"}} 
+                  style={{color: "#25B379"}} 
                 />
               </div>
             </div>

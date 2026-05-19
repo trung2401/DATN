@@ -34,7 +34,7 @@ const RecentResultsCard = ({ data }) => {
               <td className="py-3 px-4 text-gray-600 font-medium">
                 {result.nameTest}
               </td>
-              <td className="py-3 px-4 text-[#2C99E2] font-bold">
+              <td className="py-3 px-4 text-[#25B379] font-bold">
                 {`${result.score}/${result.total}`}
               </td>
               <td className="py-3 px-4 text-gray-600 font-medium">

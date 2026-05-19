@@ -89,7 +89,7 @@ const FeaturedCoursesCard = () => {
                       alt={courseName}
                       className="w-full h-full object-cover"
                     />
-                    <span className="absolute top-2 right-2 bg-[#2C99E2] text-white text-sm font-semibold px-3 py-1 rounded-sm">
+                    <span className="absolute top-2 right-2 bg-[#25B379] text-white text-sm font-semibold px-3 py-1 rounded-sm">
                       {formatCurrency(Number(course?.price || 0))}
                     </span>
                   </div>
@@ -107,7 +107,7 @@ const FeaturedCoursesCard = () => {
                       </p>
                     </div>
                     <div className="mt-4 pt-4 border-t border-gray-100">
-                      <p className="text-[#2C99E2] text-sm font-semibold">
+                      <p className="text-[#25B379] text-sm font-semibold">
                         Xem chi tiết khóa học
                       </p>
                     </div>

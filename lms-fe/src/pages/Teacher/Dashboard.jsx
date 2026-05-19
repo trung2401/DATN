@@ -81,7 +81,7 @@ const DashboardTeacher = () => {
                 type="date"
                 value={startDate}
                 onChange={(event) => setStartDate(event.target.value)}
-                className="rounded-lg border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-[#2C99E2]"
+                className="rounded-lg border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-[#25B379]"
               />
             </label>
             <label className="flex flex-col gap-2 text-sm font-semibold text-gray-700">
@@ -90,7 +90,7 @@ const DashboardTeacher = () => {
                 type="date"
                 value={endDate}
                 onChange={(event) => setEndDate(event.target.value)}
-                className="rounded-lg border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-[#2C99E2]"
+                className="rounded-lg border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-[#25B379]"
               />
             </label>
           </div>
@@ -98,7 +98,7 @@ const DashboardTeacher = () => {
           <button
             type="button"
             onClick={handleApplyFilter}
-            className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2C99E2] px-4 py-2.5 font-semibold text-white transition hover:bg-[#2383c5]"
+            className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#25B379] px-4 py-2.5 font-semibold text-white transition hover:bg-[#1e9a5a]"
           >
             <FontAwesomeIcon icon="fa-solid fa-filter" />
             Lọc dữ liệu
@@ -120,17 +120,17 @@ const DashboardTeacher = () => {
 
       <section className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <StatisticsCard
-          icon={<FontAwesomeIcon icon="fa-solid fa-sack-dollar" className="text-3xl text-[#2C99E2]" />}
+          icon={<FontAwesomeIcon icon="fa-solid fa-sack-dollar" className="text-3xl text-[#25B379]" />}
           value={`${currencyFormatter.format(totalRevenue)} đ`}
           description="Tổng doanh thu giáo viên nhận được"
         />
         <StatisticsCard
-          icon={<FontAwesomeIcon icon="fa-solid fa-file-lines" className="text-3xl text-[#2C99E2]" />}
+          icon={<FontAwesomeIcon icon="fa-solid fa-file-lines" className="text-3xl text-[#25B379]" />}
           value={totalTests}
           description="Tổng số đề thi đã tạo"
         />
         <StatisticsCard
-          icon={<FontAwesomeIcon icon="fa-solid fa-graduation-cap" className="text-3xl text-[#2C99E2]" />}
+          icon={<FontAwesomeIcon icon="fa-solid fa-graduation-cap" className="text-3xl text-[#25B379]" />}
           value={releasedCourses}
           description="Tổng số khóa học đã phát hành"
         />
@@ -158,7 +158,7 @@ const DashboardTeacher = () => {
                 <div key={item.date} className="flex flex-col items-center gap-2 w-20">
                   <div className="flex h-[220px] items-end">
                     <div
-                      className="w-12 rounded-t-lg bg-gradient-to-t from-[#2C99E2] to-[#7cc4f3] shadow-md"
+                      className="w-12 rounded-t-lg bg-gradient-to-t from-[#25B379] to-[#7cc4f3] shadow-md"
                       style={{ height: `${item.height}px` }}
                       title={`${item.date}: ${currencyFormatter.format(item.revenue)} đ`}
                     />
@@ -166,7 +166,7 @@ const DashboardTeacher = () => {
                   <div className="text-xs font-semibold text-gray-600 text-center">
                     {item.date}
                   </div>
-                  <div className="text-xs font-bold text-[#2C99E2] text-center">
+                  <div className="text-xs font-bold text-[#25B379] text-center">
                     {currencyFormatter.format(item.revenue)} đ
                   </div>
                 </div>

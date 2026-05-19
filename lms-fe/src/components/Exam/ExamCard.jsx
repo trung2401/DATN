@@ -15,7 +15,7 @@ const ExamCard = ({ title, onClick, locked = false }) => {
         flex flex-col items-center justify-center gap-3 p-4 
         border-2 border-gray-200 rounded-2xl shadow-sm
         transition duration-300 ease-in-out transform 
-        ${locked ? "" : "hover:scale-105 hover:-translate-y-1 hover:shadow-xl hover:border-[#2C99E2] hover:shadow-blue-200 cursor-pointer"}
+        ${locked ? "" : "hover:scale-105 hover:-translate-y-1 hover:shadow-xl hover:border-[#25B379] hover:shadow-blue-200 cursor-pointer"}
         w-full max-w-xs
         ${locked ? "opacity-50 relative pointer-events-none" : ""}
       `}
@@ -30,7 +30,7 @@ const ExamCard = ({ title, onClick, locked = false }) => {
       )}
       <img src={image_exame} alt="" className="object-contain w-48 h-32" />
       <h1 className="text-2xl font-semibold text-center">{title}</h1>
-      <div className="flex flex-col items-center text-[#49719C] font-medium">
+      <div className="flex flex-col items-center text-[#2C8F5F] font-medium">
         <span className="flex items-center gap-2">
           <FontAwesomeIcon icon="fa-regular fa-clock" />
           120 phút

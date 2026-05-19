@@ -66,7 +66,7 @@ const DetailQuestionDisplay = ({
           <p className="text-md font-bold mb-2 flex items-center gap-1.5">
             <FontAwesomeIcon
               icon="fa-regular fa-bookmark"
-              style={{ color: "#2C99E2" }}
+              style={{ color: "#25B379" }}
             />
             {parseInt(questionData.idQuestion) + 1}.
           </p>
@@ -84,7 +84,7 @@ const DetailQuestionDisplay = ({
         <p className="text-md font-bold mb-2 flex items-center gap-1.5">
           <FontAwesomeIcon
             icon="fa-regular fa-bookmark"
-            style={{ color: "#2C99E2" }}
+            style={{ color: "#25B379" }}
           />
           {parseInt(questionData.idQuestion) + 1}. {questionData.questionText}
         </p>
@@ -116,7 +116,7 @@ const DetailQuestionDisplay = ({
               <p className="text-md font-bold mb-2 flex items-center gap-1.5">
                 <FontAwesomeIcon
                   icon="fa-regular fa-bookmark"
-                  style={{ color: "#2C99E2" }}
+                  style={{ color: "#25B379" }}
                 />
                 {parseInt(questionData.idQuestion) + 1}.{" "}
                 {questionData.questionText}
@@ -131,7 +131,7 @@ const DetailQuestionDisplay = ({
             <p className="text-md font-bold mb-2 flex items-center gap-1.5">
               <FontAwesomeIcon
                 icon="fa-regular fa-bookmark"
-                style={{ color: "#2C99E2" }}
+                style={{ color: "#25B379" }}
               />
               {parseInt(questionData.idQuestion) + 1}.{" "}
               {questionData.questionText}
@@ -150,7 +150,7 @@ const DetailQuestionDisplay = ({
         <p className="text-md font-bold mb-2 flex items-center gap-1.5">
           <FontAwesomeIcon
             icon="fa-regular fa-bookmark"
-            style={{ color: "#2C99E2" }}
+            style={{ color: "#25B379" }}
           />
           {parseInt(questionData.idQuestion) + 1}. {questionData.questionText}
         </p>
@@ -179,7 +179,7 @@ const DetailQuestionDisplay = ({
           <p className="text-md font-bold mb-2 flex items-center gap-1.5">
             <FontAwesomeIcon
               icon="fa-regular fa-bookmark"
-              style={{ color: "#2C99E2" }}
+              style={{ color: "#25B379" }}
             />
             {questionData.idQuestion + 1}. {questionData.questionText}
           </p>

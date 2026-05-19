@@ -163,7 +163,7 @@ const ManageExam = () => {
                 {currentTeachers.map((teacher) => (
                   <tr key={String(teacher.teacherId)} className="hover:bg-gray-100">
                     <td className="px-4 py-4 text-gray-600 font-semibold">{teacher.teacherId ?? "N/A"}</td>
-                    <td className="px-4 py-4 font-bold text-[#2C99E2]">{teacher.teacherName}</td>
+                    <td className="px-4 py-4 font-bold text-[#25B379]">{teacher.teacherName}</td>
                     <td className="px-4 py-4 text-gray-600 font-semibold">{teacher.publishedCount}</td>
                     <td className="px-4 py-4 text-gray-600 font-semibold">{teacher.unpublishedCount}</td>
                     <td className="px-4 py-4">
@@ -231,7 +231,7 @@ const ManageExam = () => {
                   {detailTests.map((test) => (
                     <tr key={String(test.idTest)} className="hover:bg-gray-50">
                       <td className="px-4 py-4 text-gray-600 font-semibold">{test.idTest}</td>
-                      <td className="px-4 py-4 font-bold text-[#2C99E2]">{test.testName}</td>
+                      <td className="px-4 py-4 font-bold text-[#25B379]">{test.testName}</td>
                       <td className="px-4 py-4">
                         <span className={`inline-flex rounded-full px-3 py-1 text-sm font-semibold ${getStatusClassName(test.status)}`}>
                           {getStatusLabel(test.status)}

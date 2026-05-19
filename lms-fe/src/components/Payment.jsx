@@ -55,7 +55,7 @@ const Payment = ({ show, onClose }) => {
           {/* Spinner */}
           {loadingPayment && (
             <div className="absolute inset-0 bg-white/80 flex items-center justify-center z-10">
-              <div className="w-10 h-10 border-5 border-t-5 border-gray-200 border-t-[#2C99E2] rounded-full animate-spin"></div>
+              <div className="w-10 h-10 border-5 border-t-5 border-gray-200 border-t-[#25B379] rounded-full animate-spin"></div>
             </div>
           )}
           <div className="flex flex-col gap-5 p-4">
@@ -79,7 +79,7 @@ const Payment = ({ show, onClose }) => {
             <div className="w-full flex items-center justify-center relative min-h-60">
               {(loadingQRCode || (qrCode?.qrLink && !isImageLoaded)) && (
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-8 h-8 border-5 border-t-5 border-gray-200 border-t-[#2C99E2] rounded-full animate-spin"></div>
+                  <div className="w-8 h-8 border-5 border-t-5 border-gray-200 border-t-[#25B379] rounded-full animate-spin"></div>
                 </div>
               )}
               {qrCode?.qrLink && !loadingQRCode && !errorQRCode ? (

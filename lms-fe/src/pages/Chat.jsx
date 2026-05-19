@@ -291,7 +291,7 @@ const Chat = ({ mode = 'user' }) => {
         <section className="xl:col-span-4 border-2 border-gray-200 rounded-xl p-4 bg-white shadow-sm space-y-4">
           {isTeacherMode && (
             <div>
-              <h2 className="text-lg font-bold text-[#2C99E2] mb-2">Danh sách liên hệ</h2>
+              <h2 className="text-lg font-bold text-[#25B379] mb-2">Danh sách liên hệ</h2>
               <div className="max-h-56 overflow-y-auto space-y-2 pr-1">
                 {contacts.map((contact) => (
                   <button
@@ -308,7 +308,7 @@ const Chat = ({ mode = 'user' }) => {
                     {startingConversationUserId === contact.userId ? (
                       <span className="text-xs text-gray-500">Đang mở...</span>
                     ) : (
-                      <FontAwesomeIcon icon="fa-solid fa-comment-dots" className="text-[#2C99E2]" />
+                      <FontAwesomeIcon icon="fa-solid fa-comment-dots" className="text-[#25B379]" />
                     )}
                   </button>
                 ))}
@@ -320,7 +320,7 @@ const Chat = ({ mode = 'user' }) => {
           )}
 
           <div>
-            <h2 className="text-lg font-bold text-[#2C99E2] mb-2">Hội thoại của bạn</h2>
+            <h2 className="text-lg font-bold text-[#25B379] mb-2">Hội thoại của bạn</h2>
             <div className="max-h-80 overflow-y-auto space-y-2 pr-1">
               {conversations.map((conversation) => (
                 <button
@@ -329,7 +329,7 @@ const Chat = ({ mode = 'user' }) => {
                   onClick={() => setActiveConversationId(conversation.conversationId)}
                   className={`w-full rounded-lg border px-3 py-2 text-left transition ${
                     Number(activeConversationId) === Number(conversation.conversationId)
-                      ? 'border-[#2C99E2] bg-[#edf6ff]'
+                      ? 'border-[#25B379] bg-[#edf6ff]'
                       : 'border-gray-200 hover:bg-gray-50'
                   }`}
                 >
@@ -355,7 +355,7 @@ const Chat = ({ mode = 'user' }) => {
           {activeConversation ? (
             <>
               <div className="border-b pb-3 mb-3">
-                <h2 className="text-lg font-bold text-[#2C99E2]">
+                <h2 className="text-lg font-bold text-[#25B379]">
                   {activeConversation.otherUser?.name || activeConversation.otherUser?.userName}
                 </h2>
                 <p className="text-xs text-gray-500">@{activeConversation.otherUser?.userName}</p>
@@ -373,7 +373,7 @@ const Chat = ({ mode = 'user' }) => {
                       <div key={message.messageId} className={`flex ${mine ? 'justify-end' : 'justify-start'}`}>
                         <div
                           className={`max-w-[75%] rounded-2xl px-4 py-2 ${
-                            mine ? 'bg-[#2C99E2] text-white' : 'bg-gray-100 text-gray-700'
+                            mine ? 'bg-[#25B379] text-white' : 'bg-gray-100 text-gray-700'
                           }`}
                         >
                           <p className="whitespace-pre-wrap break-words">{message.messageText}</p>
@@ -399,13 +399,13 @@ const Chat = ({ mode = 'user' }) => {
                     }
                   }}
                   placeholder="Nhập tin nhắn..."
-                  className="flex-1 rounded-lg border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-[#2C99E2]"
+                  className="flex-1 rounded-lg border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-[#25B379]"
                 />
                 <button
                   type="button"
                   disabled={sending}
                   onClick={handleSendMessage}
-                  className="rounded-lg bg-[#2C99E2] px-4 py-2 font-semibold text-white hover:bg-[#2383c5] disabled:opacity-60"
+                  className="rounded-lg bg-[#25B379] px-4 py-2 font-semibold text-white hover:bg-[#1e9a5a] disabled:opacity-60"
                 >
                   Gửi
                 </button>

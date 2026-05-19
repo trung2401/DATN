@@ -133,7 +133,7 @@ const ManageVocabulary = () => {
                 {currentLists.map((list) => (
                   <tr key={list.listId} className="hover:bg-gray-100">
                     <td className="px-4 py-4 text-gray-600 font-semibold">{list.listId}</td>
-                    <td className="px-4 py-4 font-bold text-[#2C99E2]">{list.nameList}</td>
+                    <td className="px-4 py-4 font-bold text-[#25B379]">{list.nameList}</td>
                     <td className="px-4 py-4 text-gray-700 font-medium text-sm">
                       {list.description || '(Không có mô tả)'}
                     </td>

@@ -90,7 +90,7 @@ const Dashboard = () => {
                 <FontAwesomeIcon
                   icon="fa-solid fa-file"
                   size="4x"
-                  style={{ color: "#2C99E2" }}
+                  style={{ color: "#25B379" }}
                 />
               }
               value={numberOfTests}
@@ -101,7 +101,7 @@ const Dashboard = () => {
                 <FontAwesomeIcon
                   icon="fa-solid fa-dollar-sign"
                   size="4x"
-                  style={{ color: "#2C99E2" }}
+                  style={{ color: "#25B379" }}
                 />
               }
               value={formatCurrency(revenue.totalAmount)}
@@ -112,7 +112,7 @@ const Dashboard = () => {
                 <FontAwesomeIcon
                   icon="fa-solid fa-users"
                   size="4x"
-                  style={{ color: "#2C99E2" }}
+                  style={{ color: "#25B379" }}
                 />
               }
               value={numberOfUsers}
@@ -131,7 +131,7 @@ const Dashboard = () => {
                 type="date"
                 value={revenueStartDate}
                 onChange={(event) => setRevenueStartDate(event.target.value)}
-                className="rounded-lg border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-[#2C99E2]"
+                className="rounded-lg border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-[#25B379]"
               />
             </label>
             <label className="flex flex-col gap-2 text-sm font-semibold text-gray-700">
@@ -140,7 +140,7 @@ const Dashboard = () => {
                 type="date"
                 value={revenueEndDate}
                 onChange={(event) => setRevenueEndDate(event.target.value)}
-                className="rounded-lg border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-[#2C99E2]"
+                className="rounded-lg border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-[#25B379]"
               />
             </label>
           </div>
@@ -148,7 +148,7 @@ const Dashboard = () => {
           <button
             type="button"
             onClick={handleFilterRevenue}
-            className="inline-flex items-center justify-center rounded-lg bg-[#2C99E2] px-4 py-2.5 font-semibold text-white transition hover:bg-[#2383c5]"
+            className="inline-flex items-center justify-center rounded-lg bg-[#25B379] px-4 py-2.5 font-semibold text-white transition hover:bg-[#1e9a5a]"
           >
             Lọc doanh thu
           </button>
@@ -173,7 +173,7 @@ const Dashboard = () => {
                 <div key={item.date} className="flex flex-col items-center gap-2 w-20">
                   <div className="flex h-[220px] items-end">
                     <div
-                      className="w-12 rounded-t-lg bg-gradient-to-t from-[#2C99E2] to-[#7cc4f3] shadow-md"
+                      className="w-12 rounded-t-lg bg-gradient-to-t from-[#25B379] to-[#7cc4f3] shadow-md"
                       style={{ height: `${item.height}px` }}
                       title={`${item.date}: ${formatCurrency(item.revenue)}`}
                     />
@@ -181,7 +181,7 @@ const Dashboard = () => {
                   <div className="text-xs font-semibold text-gray-600 text-center">
                     {item.date}
                   </div>
-                  <div className="text-xs font-bold text-[#2C99E2] text-center">
+                  <div className="text-xs font-bold text-[#25B379] text-center">
                     {formatCurrency(item.revenue)}
                   </div>
                 </div>
@@ -216,7 +216,7 @@ const Dashboard = () => {
                       <td className="px-4 py-2 text-gray-600 font-semibold">
                         {payment.userName}
                       </td>
-                      <td className="px-4 py-2 font-bold text-[#2C99E2]">
+                      <td className="px-4 py-2 font-bold text-[#25B379]">
                         {formatCurrency(payment.amount)}
                       </td>
                       <td className="px-4 py-2 text-gray-600 font-semibold">
@@ -283,7 +283,7 @@ const Dashboard = () => {
                           <td className="px-4 py-2 font-semibold text-gray-600">
                             {exam.userName}
                           </td>
-                          <td className="px-4 py-2 font-bold text-[#2C99E2]">
+                          <td className="px-4 py-2 font-bold text-[#25B379]">
                             {exam.score}/990
                           </td>
                           <td className="px-4 py-2 font-semibold text-gray-600">

@@ -192,12 +192,12 @@ const ForgotPassword = () => {
                 value={email}
                 onChange={(e) => handleInputChange("email", e.target.value)}
                 placeholder="Nhập email"
-                className={`w-full text-[#49719C] font-medium px-4 py-2.5 placeholder-[#49719C] border 
+                className={`w-full text-[#2C8F5F] font-medium px-4 py-2.5 placeholder-[#2C8F5F] border 
                     ${
                       errors.email
                         ? "border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
-                        : "border-[#CEDBE8]"
-                    } rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7BA4CE] focus:border-[#7BA4CE]
+                        : "border-[#D0E8DF]"
+                    } rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4AB88A] focus:border-[#4AB88A]
                   `}
               />
               {errors.email && (
@@ -228,12 +228,12 @@ const ForgotPassword = () => {
                 value={otpCode}
                 onChange={(e) => handleInputChange("otpCode", e.target.value)}
                 placeholder="Nhập mã OTP"
-                className={`w-full text-[#49719C] font-medium px-4 py-2.5 placeholder-[#49719C] border 
+                className={`w-full text-[#2C8F5F] font-medium px-4 py-2.5 placeholder-[#2C8F5F] border 
                   ${
                     errors.otpCode
                       ? "border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
-                      : "border-[#CEDBE8]"
-                  } rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7BA4CE] focus:border-[#7BA4CE]
+                      : "border-[#D0E8DF]"
+                  } rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4AB88A] focus:border-[#4AB88A]
                 `}
               />
               {errors.otpCode && (
@@ -267,12 +267,12 @@ const ForgotPassword = () => {
                     handleInputChange("newPassword", e.target.value)
                   }
                   placeholder="Nhập mật khẩu mới"
-                  className={`w-full text-[#49719C] font-medium px-4 py-2.5 placeholder-[#49719C] border 
+                  className={`w-full text-[#2C8F5F] font-medium px-4 py-2.5 placeholder-[#2C8F5F] border 
                     ${
                       errors.newPassword
                         ? "border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
-                        : "border-[#CEDBE8]"
-                    } rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7BA4CE] focus:border-[#7BA4CE]
+                        : "border-[#D0E8DF]"
+                    } rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4AB88A] focus:border-[#4AB88A]
                   `}
                 />
                 <span
@@ -303,10 +303,10 @@ const ForgotPassword = () => {
         )}
 
         <div className="text-center text-sm mt-4">
-          <span className="text-[#49719C]">Bạn muốn quay lại? </span>
+          <span className="text-[#2C8F5F]">Bạn muốn quay lại? </span>
           <Link
             to="/login"
-            className="text-[#49719C] font-bold hover:underline"
+            className="text-[#2C8F5F] font-bold hover:underline"
           >
             Đăng nhập
           </Link>

@@ -38,7 +38,7 @@ const PreviewExam = ({ title, onClose, examId}) => {
           <div className="w-full overflow-x-auto">
             <table className="w-full text-sm md:text-base border-collapse table-auto">
               <thead>
-                <tr className="border-b-2 text-base md:text-lg border-gray-200 font-bold text-[#2C99E2]">
+                <tr className="border-b-2 text-base md:text-lg border-gray-200 font-bold text-[#25B379]">
                   <th className="px-4 py-2 text-left whitespace-nowrap">Phần nghe: 45 phút</th>
                   <th className="w-full"></th>
                   <th className="px-4 py-2 text-right whitespace-nowrap">100 câu</th>
@@ -63,7 +63,7 @@ const PreviewExam = ({ title, onClose, examId}) => {
           <div className="w-full overflow-x-auto">
             <table className="w-full text-sm md:text-base border-collapse table-auto">
               <thead>
-                <tr className="border-b-2 text-base md:text-lg border-gray-200 font-bold text-[#2C99E2]">
+                <tr className="border-b-2 text-base md:text-lg border-gray-200 font-bold text-[#25B379]">
                   <th className="px-4 py-2 text-left whitespace-nowrap">Phần đọc: 75 phút</th>
                   <th className="w-full"></th>
                   <th className="px-4 py-2 text-right whitespace-nowrap">100 câu</th>

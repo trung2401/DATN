@@ -31,7 +31,7 @@ const sectionData = {
         <FontAwesomeIcon
           icon="fa-solid fa-file"
           size="2xl"
-          style={{ color: "#2C99E2" }}
+          style={{ color: "#25B379" }}
         />
       ),
       title: "Luyện đề chuẩn quốc tế",
@@ -43,7 +43,7 @@ const sectionData = {
         <FontAwesomeIcon
           icon="fa-solid fa-book-open"
           size="2xl"
-          style={{ color: "#2C99E2" }}
+          style={{ color: "#25B379" }}
         />
       ),
       title: "Khóa học TOEIC thực chiến",
@@ -55,7 +55,7 @@ const sectionData = {
         <FontAwesomeIcon
           icon="fa-solid fa-pen-to-square"
           size="2xl"
-          style={{ color: "#2C99E2" }}
+          style={{ color: "#25B379" }}
         />
       ),
       title: "Ghi chú cá nhân hóa",
@@ -168,7 +168,7 @@ const Home = () => {
         <FontAwesomeIcon
           icon="fa-solid fa-file"
           size="5x"
-          style={{ color: "#2C99E2" }}
+          style={{ color: "#25B379" }}
         />
       ),
       value: stats.totalAttempts,
@@ -179,7 +179,7 @@ const Home = () => {
         <FontAwesomeIcon
           icon="fa-solid fa-star"
           size="5x"
-          style={{ color: "#2C99E2" }}
+          style={{ color: "#25B379" }}
         />
       ),
       value: `${stats.averageTotal}/990`,
@@ -190,7 +190,7 @@ const Home = () => {
     //     <FontAwesomeIcon
     //       icon="fa-solid fa-cube"
     //       size="5x"
-    //       style={{ color: "#2C99E2" }}
+    //       style={{ color: "#25B379" }}
     //     />
     //   ),
     //   value: userInfo?.typeUser === 0 ? "Chưa mua gói học!" : "Lifetime",
@@ -294,7 +294,7 @@ const Home = () => {
             ) : recentResults.length === 0 ? (
               <div className="text-gray-600 font-semibold text-center text-lg">
                 Bạn chưa làm bài thi nào.{" "}
-                <Link to="/exam" className="text-[#2C99E2] hover:underline">
+                <Link to="/exam" className="text-[#25B379] hover:underline">
                     Thử làm bài thi ngay!
                 </Link>
               </div>

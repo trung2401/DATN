@@ -53,7 +53,7 @@ const AccountInformation = () => {
   }, [userInfo]);
 
   const inputStyle =
-    "w-full px-3 py-1.5 text-[#49719C] font-medium placeholder-[#49719C] border border-[#CEDBE8] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7BA4CE] focus:border-[#7BA4CE]";
+    "w-full px-3 py-1.5 text-[#2C8F5F] font-medium placeholder-[#2C8F5F] border border-[#D0E8DF] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4AB88A] focus:border-[#4AB88A]";
 
   const handleUserChange = (e) => {
     const { name, value } = e.target;
@@ -178,7 +178,7 @@ const AccountInformation = () => {
                   className={`${inputStyle} ${
                     userFormErrors.name
                       ? "border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
-                      : "border-[#CEDBE8]"
+                      : "border-[#D0E8DF]"
                   }`}
                   value={userFormData.name}
                   onChange={handleUserChange}
@@ -201,7 +201,7 @@ const AccountInformation = () => {
                   className={`${inputStyle} ${
                     userFormErrors.phone
                       ? "border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
-                      : "border-[#CEDBE8]"
+                      : "border-[#D0E8DF]"
                   }`}
                   value={userFormData.phone}
                   onChange={handleUserChange}
@@ -299,7 +299,7 @@ const AccountInformation = () => {
                 className={`${inputStyle} ${
                   passwordFormErrors.password
                     ? "border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
-                    : "border-[#CEDBE8]"
+                    : "border-[#D0E8DF]"
                 }`}
                 value={passwordFormData.password}
                 onChange={handlePasswordChange}
@@ -334,7 +334,7 @@ const AccountInformation = () => {
                 className={`${inputStyle} ${
                   passwordFormErrors.newPassword
                     ? "border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
-                    : "border-[#CEDBE8]"
+                    : "border-[#D0E8DF]"
                 }`}
                 value={passwordFormData.newPassword}
                 onChange={handlePasswordChange}
@@ -369,7 +369,7 @@ const AccountInformation = () => {
                 className={`${inputStyle} ${
                   passwordFormErrors.confirmPassword
                     ? "border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
-                    : "border-[#CEDBE8]"
+                    : "border-[#D0E8DF]"
                 }`}
                 value={passwordFormData.confirmPassword}
                 onChange={handlePasswordChange}

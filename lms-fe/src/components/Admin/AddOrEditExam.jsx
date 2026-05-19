@@ -149,9 +149,9 @@ const AddOrEditExam = ({ show, onClose, examData, onSaved }) => {
               />
             </div>
 
-            <div className="rounded-xl border border-dashed border-gray-300 bg-gray-50 p-4 transition hover:border-[#2C99E2] hover:bg-[#f5faff] mx-2">
+            <div className="rounded-xl border border-dashed border-gray-300 bg-gray-50 p-4 transition hover:border-[#25B379] hover:bg-[#f5faff] mx-2">
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#2C99E2]/10 text-[#2C99E2]">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#25B379]/10 text-[#25B379]">
                   <FontAwesomeIcon icon="fa-solid fa-music" />
                 </div>
                 <div className="flex-1">
@@ -163,7 +163,7 @@ const AddOrEditExam = ({ show, onClose, examData, onSaved }) => {
                     type="file"
                     accept=".mp3,.wav,.ogg,.m4a,.aac,.flac,audio/*"
                     onChange={handleBasicAudioUpload}
-                    className="block w-full cursor-pointer rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-600 file:mr-4 file:cursor-pointer file:rounded-md file:border-0 file:bg-[#2C99E2] file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-[#2383c5]"
+                    className="block w-full cursor-pointer rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-600 file:mr-4 file:cursor-pointer file:rounded-md file:border-0 file:bg-[#25B379] file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-[#1e9a5a]"
                   />
                 </div>
               </div>

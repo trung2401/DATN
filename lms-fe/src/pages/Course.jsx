@@ -235,7 +235,7 @@ const Course = () => {
               >
                 <div className="relative h-48 bg-gray-100">
                   <img src={imageUrl} alt={courseName} className="w-full h-full object-cover" />
-                  <span className="absolute top-2 right-2 bg-[#2C99E2] text-white text-sm font-semibold px-3 py-1 rounded-sm">
+                  <span className="absolute top-2 right-2 bg-[#25B379] text-white text-sm font-semibold px-3 py-1 rounded-sm">
                     {formatCurrency(Number(course?.price || 0))}
                   </span>
                 </div>
@@ -247,7 +247,7 @@ const Course = () => {
                   <p className="text-gray-600 text-sm">Đầu vào: {course?.input || "Đang cập nhật"}</p>
                   <p className="text-gray-600 text-sm">Mục tiêu: {course?.target || "Đang cập nhật"}</p>
                   <p className="text-gray-500 text-sm">Số lượng học viên: {Number(course?.studentCount || 0)}</p>
-                  <p className="text-[#2C99E2] text-sm font-semibold pt-2">Nhấn để xem chương trình học</p>
+                  <p className="text-[#25B379] text-sm font-semibold pt-2">Nhấn để xem chương trình học</p>
                   <div className="pt-2 flex justify-end">
                     <Button
                       text="Liên hệ giáo viên"
@@ -292,7 +292,7 @@ const Course = () => {
           </div>
 
           {!isLoggedIn && (
-            <div className="mb-4 text-sm bg-[#E6F0FA] text-[#2C99E2] rounded-md px-3 py-2 font-medium">
+            <div className="mb-4 text-sm bg-[#E6F0FA] text-[#25B379] rounded-md px-3 py-2 font-medium">
               Bạn đang xem với quyền khách. Đăng nhập và mua khóa học để mở khóa video, bài tập.
               <Link to="/login" className="ml-2 underline font-semibold">Đăng nhập</Link>
             </div>
@@ -300,7 +300,7 @@ const Course = () => {
 
           {isLoggedIn && !canAccessContent && (registrationStatus === null || registrationStatus === "cancel") && (
             <div className="mb-4 flex items-center justify-between gap-3 bg-[#E6F0FA] rounded-md px-3 py-3">
-              <p className="text-sm text-[#2C99E2] font-medium">Bạn chưa đăng ký khóa học này.</p>
+              <p className="text-sm text-[#25B379] font-medium">Bạn chưa đăng ký khóa học này.</p>
               <Button
                 text={registering ? "Đang đăng ký..." : "Đăng ký khóa học"}
                 variant="primary"
@@ -357,7 +357,7 @@ const Course = () => {
                                   <Link
                                     to={`/video-lession/${selectedCourse?.courseId}/${lesson?.lessionId}`}
                                     state={{ lesson }}
-                                    className="inline-flex items-center gap-2 text-sm text-[#2C99E2] font-semibold hover:underline"
+                                    className="inline-flex items-center gap-2 text-sm text-[#25B379] font-semibold hover:underline"
                                   >
                                     <FontAwesomeIcon icon="fa-solid fa-circle-play" />
                                     Xem bài giảng
@@ -400,12 +400,12 @@ const Course = () => {
 
           <div className="space-y-2 mb-5">
             <p className="text-gray-700 font-medium">
-              Số tiền cần thanh toán: <span className="font-bold text-[#2C99E2]">{formatCurrency(Number(selectedCourse?.price || 0))}</span>
+              Số tiền cần thanh toán: <span className="font-bold text-[#25B379]">{formatCurrency(Number(selectedCourse?.price || 0))}</span>
             </p>
             <p className="text-gray-700 font-medium">
               Nội dung chuyển khoản:
             </p>
-            <div className="bg-gray-100 rounded-md px-3 py-2 text-[#2C99E2] font-semibold break-all">
+            <div className="bg-gray-100 rounded-md px-3 py-2 text-[#25B379] font-semibold break-all">
               {transferContent}
             </div>
           </div>

@@ -328,7 +328,7 @@ const ManageCourse = () => {
                       <td className="px-4 py-2">{course.courseName || "N/A"}</td>
                       <td className="px-4 py-2 max-w-[280px] truncate" title={course.teacherName || ""}>{course.teacherName || "N/A"}</td>
                       <td className="px-4 py-2">{course.duration || "N/A"}</td>
-                      <td className="px-4 py-2 font-bold text-[#2C99E2]">{formatCurrency(Number(course.price || 0))}</td>
+                      <td className="px-4 py-2 font-bold text-[#25B379]">{formatCurrency(Number(course.price || 0))}</td>
                       <td className="px-4 py-2">{Number(course.studentCount || 0)}</td>
                       <td className="px-4 py-2">{Number(course.status) === 1 ? "Đang mở" : "Đã đóng"}</td>
                       <td className="px-4 py-2 text-center">
