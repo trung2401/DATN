@@ -16,6 +16,7 @@ import {
   uploadTestAudio,
   uploadTestImage,
 } from '../../service/examService';
+import QuestionImporter from './QuestionImporter';
 
 const GROUP_PARTS = [3, 4, 6, 7];
 
@@ -152,6 +153,7 @@ const TestQuestionManager = ({ show, onClose, test }) => {
   };
 
   const isEditing = Boolean(editState.mode);
+  const [showImporter, setShowImporter] = useState(false);
 
   const handleClose = () => {
     setActivePart(1);
@@ -614,19 +616,27 @@ const TestQuestionManager = ({ show, onClose, test }) => {
           </button>
         </div>
 
-        <ul className="flex flex-row gap-4 justify-center items-center py-3 cursor-pointer border-b mb-4">
-          {Array.from({ length: 7 }, (_, i) => i + 1).map((part) => (
-            <li
-              key={part}
-              onClick={() => setActivePart(part)}
-              className={`px-2 py-2 text-base font-semibold ${
-                activePart === part ? 'text-[#25B379] border-b-2 border-[#25B379]' : 'text-gray-600'
-              }`}
-            >
-              Part {part}
-            </li>
-          ))}
-        </ul>
+        <div className="flex items-center justify-between border-b mb-4">
+          <ul className="flex flex-row gap-4 justify-center items-center py-3 cursor-pointer">
+            {Array.from({ length: 7 }, (_, i) => i + 1).map((part) => (
+              <li
+                key={part}
+                onClick={() => setActivePart(part)}
+                className={`px-2 py-2 text-base font-semibold ${
+                  activePart === part ? 'text-[#25B379] border-b-2 border-[#25B379]' : 'text-gray-600'
+                }`}
+              >
+                Part {part}
+              </li>
+            ))}
+          </ul>
+
+          <div className="pr-4">
+            <Button text="Import XLSX" variant="default" size="sm" onClick={() => setShowImporter(true)} />
+          </div>
+        </div>
+
+        <QuestionImporter show={showImporter} onClose={() => setShowImporter(false)} testId={test?.idTest || test?.testId} partId={activePart} onDone={() => { setShowImporter(false); loadQuestionsForPart(Number(activePart)); if (GROUP_PARTS.includes(Number(activePart))) loadGroups(Number(activePart)); }} />
 
         {!isGroupPart ? (
           <div className="grid grid-cols-1 gap-4">

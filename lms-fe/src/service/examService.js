@@ -175,6 +175,15 @@ const deleteQuestionGroup = ({ testId, dataQuestionId }) => {
   return axios.delete(URL_BACKEND);
 };
 
+const importXlsx = ({ testId, partId, file }) => {
+  const URL_BACKEND = `test/${testId}/import-xlsx?partId=${partId}`;
+  const formData = new FormData();
+  formData.append('file', file);
+  return axios.post(URL_BACKEND, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  });
+};
+
 export {
   getAllTests,
   getExamByYear,
@@ -205,4 +214,5 @@ export {
   deleteSingleQuestion,
   updateQuestionGroup,
   deleteQuestionGroup,
+  importXlsx,
 };

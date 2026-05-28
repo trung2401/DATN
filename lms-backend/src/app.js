@@ -41,6 +41,9 @@ app.use('/api/register-course', registerCourseRoutes);
 const testRoutes = require('./routes/testRoutes');
 app.use('/api/test', testRoutes);
 
+const importRoutes = require('./routes/importRoutes');
+app.use('/api/test', importRoutes);
+
 const teacherRoutes = require('./routes/teacherRoutes');
 app.use('/api/teacher', teacherRoutes);
 
