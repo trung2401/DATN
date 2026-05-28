@@ -6,7 +6,7 @@ const { verifyToken, isAdmin } = require('../middlewares/authMiddleware');
 router.post('/add', verifyToken, registerCourseController.createRegisterCourse);
 router.put('/:id/confirm', verifyToken, isAdmin, registerCourseController.updateRegisterCourseStatusConfirmed);
 router.put('/:id/cancel', verifyToken, isAdmin, registerCourseController.updateRegisterCourseStatusCancel);
-router.get('/getAll', verifyToken, isAdmin, registerCourseController.getAllRegisterCourses);
+router.get('/getAll', verifyToken, registerCourseController.getAllRegisterCourses);
 router.get('/getTotalRevenueConfirmed', verifyToken, isAdmin, registerCourseController.getTotalRevenueConfirmed);
 
 module.exports = router;

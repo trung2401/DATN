@@ -5,8 +5,9 @@ import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import formatCurrency from "../utils/formatCurrency";
 import Button from "../components/Button";
-import { getCourseCurriculum, getOpenCourses, registerCourse } from "../service/courseService";
+import { getCourseCurriculum, getOpenCourses, registerCourse, getUserRegisteredCourses } from "../service/courseService";
 import ModalWrapper from "../components/ModalWrapper";
+import DetailCourse from "../components/DetailCourse";
 import { getUser } from "../service/userService";
 
 const fallbackImage =
@@ -40,7 +41,9 @@ const Course = () => {
   const userInfo = useSelector((state) => state.user.userInfo);
   const navigate = useNavigate();
   const [courses, setCourses] = useState([]);
+  const [registeredCourses, setRegisteredCourses] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [registeredLoading, setRegisteredLoading] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [showCurriculum, setShowCurriculum] = useState(false);
   const [curriculumLoading, setCurriculumLoading] = useState(false);
@@ -71,8 +74,40 @@ const Course = () => {
       }
     };
 
+    const loadRegisteredCourses = async () => {
+      if (!isLoggedIn) {
+        setRegisteredCourses([]);
+        return;
+      }
+
+      try {
+        setRegisteredLoading(true);
+        const response = await getUserRegisteredCourses();
+        const data = response?.data || response || [];
+        const registrations = Array.isArray(data) ? data : Array.isArray(data?.data) ? data.data : [];
+        
+        // Extract course info from registrations
+        const coursesList = registrations
+          .filter(reg => reg.course && (reg.status === 'pending' || reg.status === 'confirmed'))
+          .map(reg => ({
+            courseId: reg.course.courseId,
+            courseName: reg.course.courseName,
+            registerCourseId: reg.registerCourseId,
+            registrationStatus: reg.status
+          }));
+        
+        setRegisteredCourses(coursesList);
+      } catch (error) {
+        setRegisteredCourses([]);
+        console.error("Failed to load registered courses:", error);
+      } finally {
+        setRegisteredLoading(false);
+      }
+    };
+
     loadCourses();
-  }, []);
+    loadRegisteredCourses();
+  }, [isLoggedIn]);
 
   const openCourses = useMemo(
     () => courses.filter((course) => Number(course?.status ?? 1) === 1),
@@ -200,10 +235,83 @@ const Course = () => {
   return (
     <>
       <main className="container mx-auto px-4 py-10">
+      {isLoggedIn && (
+        <section className="mb-12">
+          <h1 className="text-3xl font-bold mb-2">Khóa học đã đăng ký</h1>
+          <p className="text-gray-600 font-medium mb-6">
+            Các khóa học bạn đã đăng ký hoặc đang chờ xác nhận từ admin.
+          </p>
+
+          {registeredLoading ? (
+            <div className="text-center text-gray-600 font-semibold py-10">Đang tải danh sách khóa học đã đăng ký...</div>
+          ) : registeredCourses.length === 0 ? (
+            <div className="text-center text-gray-600 font-semibold py-10">Bạn chưa đăng ký khóa học nào.</div>
+          ) : (
+            <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {registeredCourses.map((reg) => {
+                const courseFromList = courses.find(c => Number(c?.courseId) === Number(reg.courseId));
+                if (!courseFromList) return null;
+
+                const courseId = courseFromList?.courseId ?? "N/A";
+                const courseName = courseFromList?.courseName || "Khóa học TOEIC";
+                const teacherName = courseFromList?.teacherName || "Đội ngũ giảng viên";
+                const imageUrl = resolveImageUrl(courseFromList?.image);
+
+                return (
+                  <article
+                    key={String(reg.registerCourseId)}
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => handleOpenCurriculum(courseFromList)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        handleOpenCurriculum(courseFromList);
+                      }
+                    }}
+                    className="border border-gray-200 rounded-lg overflow-hidden shadow-sm bg-white hover:shadow-lg transition cursor-pointer"
+                  >
+                    <div className="relative h-48 bg-gray-100">
+                      <img src={imageUrl} alt={courseName} className="w-full h-full object-cover" />
+                      <span className="absolute top-2 right-2 bg-[#25B379] text-white text-sm font-semibold px-3 py-1 rounded-sm">
+                        {reg.registrationStatus === 'confirmed' ? 'Đã xác nhận' : 'Chờ xác nhận'}
+                      </span>
+                    </div>
+
+                    <div className="p-4 space-y-2">
+                      <h2 className="font-bold text-lg leading-snug">{courseName}</h2>
+                      <p className="text-gray-600 text-sm">{courseFromList?.courseDesc || "Chưa có mô tả khóa học."}</p>
+                      <p className="text-gray-600 text-sm">Giảng viên: {teacherName}</p>
+                      <p className="text-gray-600 text-sm">Đầu vào: {courseFromList?.input || "Đang cập nhật"}</p>
+                      <p className="text-gray-600 text-sm">Mục tiêu: {courseFromList?.target || "Đang cập nhật"}</p>
+                      <p className="text-[#25B379] text-sm font-semibold pt-2">Nhấn để xem chương trình học</p>
+                      <div className="pt-2 flex justify-end">
+                        <Button
+                          text="Liên hệ giáo viên"
+                          variant="default"
+                          size="sm"
+                          icon={<FontAwesomeIcon icon="fa-solid fa-comments" />}
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            handleContactTeacher(courseFromList);
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </article>
+                );
+              })}
+            </section>
+          )}
+        </section>
+      )}
+
       <section className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Khóa học đang mở</h1>
+        <h1 className="text-3xl font-bold mb-2">{isLoggedIn ? 'Khóa học đang mở' : 'Khóa học đang mở'}</h1>
         <p className="text-gray-600 font-medium">
-          Danh sách khóa học TOEIC hiện có để bạn tham khảo trước khi đăng ký.
+          {isLoggedIn 
+            ? 'Danh sách tất cả các khóa học có sẵn để bạn đăng ký thêm.'
+            : 'Danh sách khóa học TOEIC hiện có để bạn tham khảo trước khi đăng ký.'}
         </p>
       </section>
 
@@ -268,114 +376,19 @@ const Course = () => {
       )}
       </main>
 
-      <ModalWrapper show={showCurriculum} onClose={closeCurriculumModal}>
-        <div
-          onClick={(e) => e.stopPropagation()}
-          className="bg-white rounded-xl py-6 px-5 w-full max-w-5xl shadow-lg max-h-[95vh] overflow-y-auto"
-        >
-          <div className="flex justify-between items-start mb-4 gap-4">
-            <div>
-              <h2 className="text-2xl font-bold">{selectedCourse?.courseName || "Chương trình học"}</h2>
-              <p className="text-sm text-gray-600 mt-1">
-                {canAccessContent
-                  ? "Bạn đã mua khóa học. Có thể xem đầy đủ video và bài tập."
-                  : "Bạn chưa mua khóa học. Có thể xem danh sách bài giảng, nội dung chi tiết đang bị khóa."}
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={closeCurriculumModal}
-              className="w-8 h-8 rounded hover:bg-gray-100 flex items-center justify-center"
-            >
-              <FontAwesomeIcon icon="fa-solid fa-xmark" size="lg" />
-            </button>
-          </div>
-
-          {!isLoggedIn && (
-            <div className="mb-4 text-sm bg-[#E6F0FA] text-[#25B379] rounded-md px-3 py-2 font-medium">
-              Bạn đang xem với quyền khách. Đăng nhập và mua khóa học để mở khóa video, bài tập.
-              <Link to="/login" className="ml-2 underline font-semibold">Đăng nhập</Link>
-            </div>
-          )}
-
-          {isLoggedIn && !canAccessContent && (registrationStatus === null || registrationStatus === "cancel") && (
-            <div className="mb-4 flex items-center justify-between gap-3 bg-[#E6F0FA] rounded-md px-3 py-3">
-              <p className="text-sm text-[#25B379] font-medium">Bạn chưa đăng ký khóa học này.</p>
-              <Button
-                text={registering ? "Đang đăng ký..." : "Đăng ký khóa học"}
-                variant="primary"
-                size="sm"
-                disabled={registering}
-                onClick={handleRegisterCourse}
-              />
-            </div>
-          )}
-
-          {isLoggedIn && !canAccessContent && registrationStatus === "pending" && (
-            <div className="mb-4 text-sm bg-[#FFF7E6] text-[#B7791F] rounded-md px-3 py-2 font-medium">
-              Bạn đã đăng ký khóa học. Đơn đang chờ admin xác nhận.
-            </div>
-          )}
-
-          {curriculumLoading ? (
-            <div className="text-center text-gray-600 font-semibold py-8">Đang tải chương trình học...</div>
-          ) : (
-            <div className="space-y-4">
-              {[1, 2, 3, 4, 5, 6, 7].map((partId) => {
-                const lessons = curriculumByPart[partId] || [];
-
-                return (
-                  <div key={partId} className="border-b border-gray-200 pb-3">
-                    <h3 className="font-semibold mb-2">{PART_LABELS[partId]}</h3>
-
-                    {lessons.length === 0 ? (
-                      <p className="text-sm text-gray-500">Chưa có bài giảng.</p>
-                    ) : (
-                      <div className="space-y-2">
-                        {lessons.map((lesson) => {
-                          const lessonLocked = !canAccessContent || Boolean(lesson?.isLocked);
-
-                          return (
-                            <div key={String(lesson?.lessionId)} className="border border-[#25D390]/40 rounded-md p-3">
-                              <div className="flex items-center justify-between gap-2">
-                                <div>
-                                  <p className="font-semibold text-[#25B379]">
-                                    Bài {lesson?.orderNumber || "-"}: {lesson?.lessionName || "Bài giảng"}
-                                  </p>
-                                </div>
-                                {lessonLocked && (
-                                  <FontAwesomeIcon icon="fa-solid fa-lock" className="text-[#25B379]" />
-                                )}
-                              </div>
-
-                              {lessonLocked ? (
-                                <p className="text-sm text-gray-500 mt-1">
-                                  Nội dung video/bài tập bị khóa. Vui lòng mua khóa học để truy cập.
-                                </p>
-                              ) : (
-                                <div className="mt-3 space-y-3">
-                                  <Link
-                                    to={`/video-lession/${selectedCourse?.courseId}/${lesson?.lessionId}`}
-                                    state={{ lesson }}
-                                    className="inline-flex items-center gap-2 text-sm text-[#25B379] font-semibold hover:underline"
-                                  >
-                                    <FontAwesomeIcon icon="fa-solid fa-circle-play" />
-                                    Xem bài giảng
-                                  </Link>
-                                </div>
-                              )}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      </ModalWrapper>
+      <DetailCourse
+        show={showCurriculum}
+        onClose={closeCurriculumModal}
+        selectedCourse={selectedCourse}
+        curriculumByPart={curriculumByPart}
+        curriculumLoading={curriculumLoading}
+        canAccessContent={canAccessContent}
+        registrationStatus={registrationStatus}
+        registering={registering}
+        onRegister={handleRegisterCourse}
+        isLoggedIn={isLoggedIn}
+        onLessonClick={() => {}}
+      />
 
       <ModalWrapper show={showPaymentModal} onClose={() => !registering && setShowPaymentModal(false)}>
         <div

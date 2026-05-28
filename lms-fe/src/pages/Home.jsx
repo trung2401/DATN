@@ -12,7 +12,8 @@ import FeaturedCoursesCard from "../components/Home/FeaturedCoursesCard.jsx";
 import LearningStatisticsCard from "../components/StatisticsCard.jsx";
 import RecentResultsCard from "../components/Home/RecentResultsCard.jsx";
 import { Link } from "react-router-dom";
-const banner = "https://pub-e860ef97c13d407c808df35aa1a698c7.r2.dev/material-web-app/1.png";
+// const banner = "https://pub-e860ef97c13d407c808df35aa1a698c7.r2.dev/material-web-app/1.png";
+import banner from "../assets/images/bannerToeic.png";
 
 const sectionData = {
   banner: {

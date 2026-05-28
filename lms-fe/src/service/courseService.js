@@ -25,4 +25,9 @@ const getVocabularyListInfo = ({ listId }) => {
   return axios.get(URL_BACKEND);
 };
 
-export { getOpenCourses, getCourseCurriculum, registerCourse, getVocabularyByList, getVocabularyListInfo };
+const getUserRegisteredCourses = () => {
+  const URL_BACKEND = "register-course/getAll";
+  return axios.get(URL_BACKEND);
+};
+
+export { getOpenCourses, getCourseCurriculum, registerCourse, getVocabularyByList, getVocabularyListInfo, getUserRegisteredCourses };
