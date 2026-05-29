@@ -7,7 +7,7 @@ import {
   addOrUpdateTempPart,
   addOrUpdateTempQuestion,
 } from "../../redux/slice/adminSlice";
-import { uploadAudio, uploadImage } from "../../service/adminService";
+import { uploadTestAudio, uploadTestImage } from "../../service/examService";
 
 const ExamForm = ({ show, onClose, partNumber, questionData }) => {
   const dispatch = useDispatch();
@@ -189,7 +189,7 @@ const ExamForm = ({ show, onClose, partNumber, questionData }) => {
 
     setUploading((prev) => ({ ...prev, audio: true }));
     try {
-      const response = await uploadAudio({ file });
+      const response = await uploadTestAudio({ file });
 
       if (response.status === 200) {
         const audioUrl = response.data.url;
@@ -251,7 +251,7 @@ const ExamForm = ({ show, onClose, partNumber, questionData }) => {
 
     setUploading((prev) => ({ ...prev, image: true }));
     try {
-      const response = await uploadImage({ file });
+      const response = await uploadTestImage({ file });
       if (response.status === 200) {
         const imageUrl = response.data.url;
         if (!imageUrl) {

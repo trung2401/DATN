@@ -109,33 +109,6 @@ const validateUpdateInforUser = ({ name, phone }) => {
     return error;    
 }
 
-// Hàm validate cho quên mật khẩu
-const validateForgotPassword = ({ email, otpCode, newPassword }) => {
-  const errors = {};
-  const numberRegex = /^\d+$/;
-  
-  if(!email) {
-    errors.email = 'Email không được để trống';
-  }else if (!emailRegex.test(email)) {
-    errors.email = 'Email không hợp lệ';
-  }
-
-  if(!otpCode) {
-    errors.otpCode = 'Mã OTP không được để trống';
-  }else if (otpCode.length < 6) {
-    errors.otpCode = 'Mã OTP phải có ít nhất 6 ký tự';
-  }else if (!numberRegex.test(otpCode)) {
-    errors.otpCode = 'Mã OTP phải là số';
-  }
-  
-  if(!newPassword) {
-    errors.newPassword = 'Mật khẩu mới không được để trống';
-  }else if (newPassword.length < 8) {
-    errors.newPassword = 'Mật khẩu mới phải có ít nhất 8 ký tự';
-  }
-  return errors;
-}
-
 // Hàm validate thêm user 
 const validateAddUser = (
   { userName, gmail, password, confirmPassword, name, phone, roleId },
@@ -194,5 +167,5 @@ const validateAddUser = (
   return errors;
 };
 export {
-    validateLogin, validateRegister, validateAddUpdateVocabulary, validateChangePassword, validateUpdateInforUser, validateForgotPassword,validateAddUser
+  validateLogin, validateRegister, validateAddUpdateVocabulary, validateChangePassword, validateUpdateInforUser, validateAddUser
 }

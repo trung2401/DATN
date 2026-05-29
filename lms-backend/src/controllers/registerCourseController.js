@@ -7,14 +7,15 @@ const serializeRegisterCourse = (item) => ({
     courseId: item.CourseID,
     userId: item.UserID,
     teacherId: item.TeacherID,
-    date: item.Date,
+    date: item.ConfirmDate || item.Date,  // Use ConfirmDate (approval date) first, fallback to Date
     totalAmount: item.TotalAmount,
     confirmDate: item.ConfirmDate,
     totalAmountOfTeacher: item.TotalAmountOfTeacher,
     status: item.status,
     course: item.Course ? {
         courseId: item.Course.CourseID,
-        courseName: item.Course.CourseName
+        courseName: item.Course.CourseName,
+        duration: item.Course.Duration
     } : null,
     student: item.Student ? {
         userId: item.Student.UserID,
@@ -166,7 +167,7 @@ const getAllRegisterCourses = async (req, res) => {
         const data = await RegisterCourse.findAll({
             where,
             include: [
-                { model: Course, as: 'Course', attributes: ['CourseID', 'CourseName'] },
+                { model: Course, as: 'Course', attributes: ['CourseID', 'CourseName', 'Duration'] },
                 { model: User, as: 'Student', attributes: ['UserID', 'UserName', 'Name'] },
                 { model: User, as: 'Teacher', attributes: ['UserID', 'UserName', 'Name'] }
             ],

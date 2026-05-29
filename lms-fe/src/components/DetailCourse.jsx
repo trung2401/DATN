@@ -99,6 +99,15 @@ const DetailCourse = ({
             </div>
           )}
 
+        {/* Expired registration message */}
+        {isLoggedIn &&
+          !canAccessContent &&
+          registrationStatus === "expired" && (
+            <div className="mb-4 text-sm bg-[#FEE2E2] text-[#DC2626] rounded-md px-3 py-2 font-medium">
+              Thời hạn khóa học của bạn đã quá hạn. Vui lòng đăng ký lại để tiếp tục học tập.
+            </div>
+          )}
+
         {/* Curriculum content */}
         {curriculumLoading ? (
           <div className="text-center text-gray-600 font-semibold py-8">

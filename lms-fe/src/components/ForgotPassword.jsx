@@ -1,3 +1,4 @@
+/*
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { checkEmail, checkOTP, resetPassword } from "../service/authService.js";
@@ -315,5 +316,12 @@ const ForgotPassword = () => {
     </div>
   );
 };
+
+export default ForgotPassword;
+*/
+
+import React from "react";
+
+const ForgotPassword = () => null;
 
 export default ForgotPassword;

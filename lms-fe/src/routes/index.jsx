@@ -7,7 +7,6 @@ import Note from "../pages/Note";
 import Chat from "../pages/Chat";
 import Login from "../components/Login";
 import Register from "../components/Register";
-import ForgotPassword from "../components/ForgotPassword";
 import TakeTheExam from "../components/Exam/TakeTheExam";
 import SubmitExamResult from "../components/Exam/SubmitExamResult";
 import AccountInformation from "../components/AccountInformation";
@@ -133,15 +132,6 @@ const routes = [
         component: (
           <PublicRoute>
             <Register />
-          </PublicRoute>
-        ),
-        protected: false,
-      },
-      {
-        path: "/forgotpassword",
-        component: (
-          <PublicRoute>
-            <ForgotPassword />
           </PublicRoute>
         ),
         protected: false,

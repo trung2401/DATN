@@ -12,39 +12,9 @@ const getTestsByTeacher = ({ userId }) => {
   return axios.get(URL_BACKEND);
 };
 
-// Lấy đề thi theo năm
-const getExamByYear = ({ year }) => {
-  const URL_BACKEND = `exam-service/getTestInfo?year=${year}`;
-  return axios.get(URL_BACKEND);
-};
-
-// Lấy đề thi các năm
-const getAllExamByYear = () => {
-    const URL_BACKEND = 'exam-service/getYears';
-    return axios.get(URL_BACKEND);
-  };
-// Lấy kết quả khi nộp bài thi
-const resultSubmitExam = ({ obj }) => {
-  const URL_BACKEND = "exam-service/TestAnswer";
-  const data = {
-    testId: obj.testId,
-    timeDoTest: obj.timeDoTest,
-    dateTest: obj.dateTest,
-    userAnswers: obj.userAnswers,
-    status: obj.status,
-  };
-  return axios.post(URL_BACKEND, data);
-};
-
 const submitTest = ({ historyOfTestID, answers }) => {
   const URL_BACKEND = "test/submit";
   return axios.post(URL_BACKEND, { historyOfTestID, answers });
-};
-
-// Lấy ra bài làm những chưa nộp đã rớt mạng
-const getExamNotSubmit = ({testId}) => {
-  const URL_BACKEND = `exam-service/getHistoryDraftByUserAndTest?testId=${testId}`;
-  return axios.get(URL_BACKEND);
 };
 
 // Lấy ra chi tiết đề thi
@@ -58,11 +28,6 @@ const startTest = ({ testId }) => {
   return axios.post(URL_BACKEND);
 };
 
-// Lấy ra lịch sử làm bài thi
-const getHistoryExam = () => {
-    const URL_BACKEND = 'exam-service/getHistoryTestByUser';
-    return axios.get(URL_BACKEND);
-}
 
 // Lấy ra lịch sử làm bài thi theo id
 const getHistoryExamById = ({ testId }) => {
@@ -70,11 +35,6 @@ const getHistoryExamById = ({ testId }) => {
     return axios.get(URL_BACKEND);
 }
 
-// Xóa lịch sử làm bài thi
-const deleteHistoryExamById = ({ historyTestId }) => {
-    const URL_BACKEND = `exam-service/deleteHistoryTest?historyTestId=${historyTestId}`;
-    return axios.delete(URL_BACKEND);
-}
 
 const getTotalAttemptsByUser = ({ userId }) => {
   const URL_BACKEND = `test/getTotalAttemptsByUser/${userId}`;
@@ -186,15 +146,9 @@ const importXlsx = ({ testId, partId, file }) => {
 
 export {
   getAllTests,
-  getExamByYear,
-  resultSubmitExam,
   submitTest,
   getExamById,
-  getAllExamByYear,
-  getHistoryExam,
   getHistoryExamById,
-  getExamNotSubmit,
-  deleteHistoryExamById,
   startTest,
   getTotalAttemptsByUser,
   getAverageTestScoreByUser,

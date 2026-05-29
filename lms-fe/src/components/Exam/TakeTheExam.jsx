@@ -10,15 +10,11 @@ import SideBarMobile from "./SideBarMobile";
 import {
   fetchExamById,
   fetchStartTest,
-  fetchExamNotSubmit,
   submitExam,
   clearSubmitError,
-  clearExamNotSubmit,
-  fetchDeleteHistoryExamById,
 } from "../../redux/slice/examSlice";
 import formatDateTime from "../../utils/formatDateTime";
 import formatTime from "../../utils/formatTime";
-import convertFormatTime from "../../utils/convertFormatTime";
 import { toast } from "react-toastify";
 
 // Cấu hình các phần
@@ -43,14 +39,13 @@ const TakeTheExam = () => {
   const { testId } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { selectedExam, examNotSubmit, loading, error, submitting } = useSelector(
+  const { selectedExam, loading, error, submitting } = useSelector(
     (state) => state.exam || {}
   );
 
   // State
   const [isStarted, setIsStarted] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [showRestoreModal, setShowRestoreModal] = useState(false);
   const [timeLeft, setTimeLeft] = useState(2);
   const [selectedQuestionId, setSelectedQuestionId] = useState(0);
   const [userAnswers, setUserAnswers] = useState({});
@@ -63,85 +58,6 @@ const TakeTheExam = () => {
   const handleSubmitRef = useRef(null);
 
   // Fetch dữ liệu
-  useEffect(() => {
-    if (testId) {
-      dispatch(fetchExamNotSubmit(testId));
-    }
-  }, [dispatch, testId]);
-
-  // Map dữ liệu từ examNotSubmit
-  useEffect(() => {
-    if (examNotSubmit && examNotSubmit.userAnswer && examNotSubmit.timeSpent !== undefined) {
-      // Hiển thị modal xác nhận để cho user chọn làm tiếp hay làm lại
-      setShowRestoreModal(true);
-    } else if (examNotSubmit === null) {
-      setUserAnswers({});
-      setTimeLeft(2);
-      setIsStarted(false);
-    }
-  }, [examNotSubmit]);
-
-  // Hàm xử lý khi user chọn "Làm tiếp"
-  const handleContinueExam = async () => {
-    if (examNotSubmit && examNotSubmit.userAnswer && examNotSubmit.timeSpent !== undefined) {
-      try {
-        await dispatch(fetchExamById(testId)).unwrap();
-        setHistoryOfTestID(examNotSubmit.idTestHistory || null);
-
-        const restoredAnswers = examNotSubmit.userAnswer.reduce((acc, answer) => {
-          // Kiểm tra các điều kiện khác nhau để lọc câu đã trả lời
-          const hasValidAnswer = answer.userAnswer &&
-                                answer.userAnswer !== null &&
-                                answer.userAnswer !== undefined &&
-                                answer.userAnswer.toString().trim() !== "" &&
-                                answer.userAnswer !== "N/A" &&
-                                answer.userAnswer !== "null";
-
-          if (hasValidAnswer) {
-            acc[answer.questionNumber] = answer.userAnswer;
-          }
-          return acc;
-        }, {});
-
-        setUserAnswers(restoredAnswers);
-        setTimeLeft(2 - convertFormatTime(examNotSubmit.timeSpent));
-        setIsStarted(true);
-
-        // Focus vào câu trả lời cuối cùng
-        const answeredQuestionNumbers = Object.keys(restoredAnswers).map(Number).sort((a, b) => b - a);
-        if (answeredQuestionNumbers.length > 0) {
-          const lastAnsweredQuestion = answeredQuestionNumbers[0]; // Câu cuối cùng (số lớn nhất)
-          setSelectedQuestionId(lastAnsweredQuestion);
-        }
-      } catch (err) {
-        toast.error("Không thể tải bài thi để tiếp tục.");
-      }
-    }
-    setShowRestoreModal(false);
-  };
-
-  // Hàm xử lý khi user chọn "Làm lại"
-  const handleRestartExam = async () => {
-    if (examNotSubmit && examNotSubmit.idTestHistory) {
-      try {
-        await dispatch(fetchDeleteHistoryExamById({ 
-          historyTestId: examNotSubmit.idTestHistory 
-        })).unwrap();
-        
-        // Reset về trạng thái ban đầu và clear examNotSubmit
-        dispatch(clearExamNotSubmit());
-        setUserAnswers({});
-        setTimeLeft(2);
-        setIsStarted(false);
-        setHistoryOfTestID(null);
-        setSelectedQuestionId(0);
-        setShowRestoreModal(false);
-      } catch (error) {
-        console.error("Error deleting history:", error);
-        setShowRestoreModal(false);
-      }
-    }
-  };
 
   // Bộ đếm thời gian
   useEffect(() => {
@@ -252,7 +168,7 @@ const TakeTheExam = () => {
       setHistoryOfTestID(started?.historyOfTestID || null);
       await dispatch(fetchExamById(testId)).unwrap();
       setIsStarted(true);
-    } catch (err) {
+    } catch {
       toast.error("Không thể bắt đầu bài thi. Vui lòng thử lại.");
     } finally {
       setIsStartingExam(false);
@@ -291,6 +207,9 @@ const TakeTheExam = () => {
 
   // Nộp bài
   const handleSubmit = async (status) => {
+    if (status !== "1") {
+      return;
+    }
     // Clear inactivity timer khi submit
     if (inactivityTimerRef.current) {
       clearTimeout(inactivityTimerRef.current);
@@ -304,7 +223,7 @@ const TakeTheExam = () => {
         const started = await dispatch(fetchStartTest(testId)).unwrap();
         resolvedHistoryOfTestID = started?.historyOfTestID;
         setHistoryOfTestID(resolvedHistoryOfTestID || null);
-      } catch (err) {
+      } catch {
         toast.error("Không thể tạo lượt thi để nộp bài.");
         return;
       }
@@ -352,8 +271,7 @@ const TakeTheExam = () => {
       await dispatch(submitExam(payload)).unwrap();
       setShowModal(false);
       if (status === "1") {
-        // Nộp bài hoàn thành - clear examNotSubmit và chuyển trang kết quả
-        dispatch(clearExamNotSubmit());
+        // Nộp bài hoàn thành - chuyển trang kết quả
         setIsStarted(false);
         if (resolvedHistoryOfTestID) {
           navigate(`/exam/result/${resolvedHistoryOfTestID}`);
@@ -555,17 +473,6 @@ const TakeTheExam = () => {
         onClose={() => {setShowModal(false); dispatch(clearSubmitError());}}
         onCancel={() => {setShowModal(false); dispatch(clearSubmitError());}}
         onConfirm={() => handleSubmit("1")}
-      />
-      <ConfirmModal
-        show={showRestoreModal}
-        title="Bài thi chưa hoàn tất"
-        description="Bài thi này bạn chưa hoàn thành. Bạn có muốn tiếp tục làm bài cũ hay bắt đầu làm lại từ đầu?"
-        cancelText="Làm lại"
-        confirmText="Làm tiếp"
-        confirmVariant="primary"
-        onClose={() => setShowRestoreModal(false)}
-        onCancel={handleRestartExam}
-        onConfirm={handleContinueExam}
       />
       <SideBarMobile
         parts={parts}

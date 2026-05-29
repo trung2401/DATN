@@ -52,6 +52,23 @@ const Header = () => {
     setDropdownOpen(false);
     setIsMobileMenuOpen(false);
   };
+
+  const avatarPath =
+    userInfo?.avatar ||
+    userInfo?.Avatar ||
+    userInfo?.image ||
+    userInfo?.Image ||
+    userInfo?.profileImage ||
+    "";
+  const avatarUrl = (() => {
+    const path = String(avatarPath || "").trim();
+    if (!path) return "";
+    if (path.startsWith("http://") || path.startsWith("https://")) return path;
+    const backendBase = String(import.meta.env.VITE_BACKEND_URL || "").replace(/\/$/, "");
+    const publicBase = backendBase.replace(/\/api$/i, "");
+    const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+    return `${publicBase}${normalizedPath}`;
+  })();
   return (
     <>
       <header className="border-b border-gray-200">

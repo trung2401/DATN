@@ -3,7 +3,6 @@ import { getOpenCourses } from "../../service/courseService";
 import { Link } from "react-router-dom";
 import Button from "../Button";
 import formatCurrency from "../../utils/formatCurrency";
-import { toast } from "react-toastify";
 
 const fallbackImage =
   "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=1200&q=80";

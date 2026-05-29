@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { toast } from 'react-toastify';
 import {
-  getTeachersForChat,
   getStudentsForChat,
   getMyConversations,
   getOrCreateConversation,

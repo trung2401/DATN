@@ -3,8 +3,9 @@ import { Link, useLocation, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
-import { getCourseCurriculum, getVocabularyListInfo } from "../service/courseService";
+import { getCourseCurriculum, getVocabularyListInfo, getUserRegisteredCourses } from "../service/courseService";
 import DetailCourse from "../components/DetailCourse";
+import { getEffectiveRegistrationStatus } from "../utils/dateUtils";
 
 const resolveAssetUrl = (assetPath) => {
   const path = String(assetPath || "").trim();
@@ -28,7 +29,72 @@ const VideoLession = () => {
   );
   const [curriculumByPart, setCurriculumByPart] = useState({});
   const [curriculumLoading, setCurriculumLoading] = useState(false);
+  const [registrationStatus, setRegistrationStatus] = useState("pending");
+  const [canAccessContent, setCanAccessContent] = useState(false);
   const isLoggedIn = useSelector((state) => state.auth.isAuthenticated);
+
+  // Check course registration status and expiry
+  useEffect(() => {
+    const checkRegistration = async () => {
+      if (!isLoggedIn || !courseId) {
+        setCanAccessContent(false);
+        setRegistrationStatus(null);
+        return;
+      }
+
+      try {
+        const response = await getUserRegisteredCourses();
+        const data = response?.data || response || [];
+        const registrations = Array.isArray(data) ? data : Array.isArray(data?.data) ? data.data : [];
+        
+        console.log('📚 VideoLession - Registrations loaded:', registrations);
+        
+        const courseReg = registrations.find(
+          reg => Number(reg.course?.courseId) === Number(courseId)
+        );
+
+        console.log(`🔍 VideoLession - Looking for courseId: ${courseId}`, { courseReg });
+
+        if (!courseReg || courseReg.status !== 'confirmed') {
+          console.warn(`⚠️  VideoLession - No confirmed registration found. Status:`, courseReg?.status);
+          setCanAccessContent(false);
+          setRegistrationStatus(courseReg?.status || null);
+          return;
+        }
+
+        console.log('📅 VideoLession - Checking expiry:', {
+          date: courseReg.date,
+          duration: courseReg.course?.duration,
+          courseId: courseReg.course?.courseId
+        });
+
+        // Check if registration expired
+        const effectiveStatus = getEffectiveRegistrationStatus(
+          courseReg.status,
+          courseReg.date,
+          courseReg.course?.duration
+        );
+
+        console.log(`✅ VideoLession - Effective status: ${effectiveStatus}`);
+
+        if (effectiveStatus === 'expired') {
+          console.error('❌ VideoLession - Registration EXPIRED, blocking access');
+          setCanAccessContent(false);
+          setRegistrationStatus('expired');
+        } else {
+          console.log('✓ VideoLession - Registration ACTIVE, allowing access');
+          setCanAccessContent(true);
+          setRegistrationStatus(effectiveStatus);
+        }
+      } catch (error) {
+        console.error("Failed to check course registration:", error);
+        setCanAccessContent(false);
+        setRegistrationStatus(null);
+      }
+    };
+
+    checkRegistration();
+  }, [isLoggedIn, courseId]);
 
   useEffect(() => {
     const fetchVocabularyListName = async () => {
@@ -89,11 +155,10 @@ const VideoLession = () => {
     };
 
     loadCurriculum();
-  }, [courseId]);
+  }, [courseId, lessonId]);
 
   useEffect(() => {
     const fetchLesson = async () => {
-      if (lesson) return;
       if (!courseId || !lessonId) return;
 
       try {
@@ -115,7 +180,7 @@ const VideoLession = () => {
     };
 
     fetchLesson();
-  }, [courseId, lessonId, lesson]);
+  }, [courseId, lessonId]);
 
   const videoUrl = useMemo(() => resolveAssetUrl(lesson?.video), [lesson]);
   const exerciseUrl = useMemo(() => resolveAssetUrl(lesson?.exercise), [lesson]);
@@ -141,7 +206,26 @@ const VideoLession = () => {
               </Link>
             </div>
 
-            {videoUrl ? (
+            {!canAccessContent ? (
+              <div className="w-full rounded border border-red-300 bg-red-50 p-6 text-center">
+                <p className="text-red-700 font-semibold mb-2">
+                  {registrationStatus === 'expired'
+                    ? '⏰ Khóa học của bạn đã quá hạn'
+                    : '🔒 Bạn không có quyền xem bài giảng này'}
+                </p>
+                <p className="text-red-600 text-sm mb-4">
+                  {registrationStatus === 'expired'
+                    ? 'Thời gian sử dụng khóa học đã kết thúc. Vui lòng đăng ký lại để tiếp tục học tập.'
+                    : 'Vui lòng đăng ký khóa học để xem nội dung.'}
+                </p>
+                <Link
+                  to="/courses"
+                  className="inline-block bg-red-600 text-white px-4 py-2 rounded font-medium hover:bg-red-700"
+                >
+                  ← Quay lại danh sách khóa học
+                </Link>
+              </div>
+            ) : videoUrl ? (
               <video controls className="w-full rounded border border-gray-200 bg-black">
                 <source src={videoUrl} />
                 Trình duyệt không hỗ trợ video.
@@ -154,18 +238,25 @@ const VideoLession = () => {
               <li>
                 Từ vựng:{" "}
                 {lesson?.listId ? (
-                  <Link
-                    to={`/course/vocabulary-list/${lesson.listId}`}
-                    state={{
-                      listInfo: vocabularyListInfo || {
-                        listId: lesson.listId,
-                        nameList: `Danh sách từ vựng #${lesson.listId}`,
-                      },
-                    }}
-                    className="text-[#25B379] underline font-semibold"
-                  >
-                    {vocabularyListInfo?.nameList || `Danh sách từ vựng #${lesson.listId}`}
-                  </Link>
+                  canAccessContent ? (
+                    <Link
+                      to={`/course/vocabulary-list/${lesson.listId}`}
+                      state={{
+                        courseId,
+                        listInfo: vocabularyListInfo || {
+                          listId: lesson.listId,
+                          nameList: `Danh sách từ vựng #${lesson.listId}`,
+                        },
+                      }}
+                      className="text-[#25B379] underline font-semibold"
+                    >
+                      {vocabularyListInfo?.nameList || `Danh sách từ vựng #${lesson.listId}`}
+                    </Link>
+                  ) : (
+                    <span className="text-gray-400 line-through cursor-not-allowed" title="Bạn không có quyền truy cập">
+                      {vocabularyListInfo?.nameList || `Danh sách từ vựng #${lesson.listId}`}
+                    </span>
+                  )
                 ) : (
                   "Chưa có danh sách từ vựng"
                 )}
@@ -173,14 +264,20 @@ const VideoLession = () => {
               <li>
                 Bài tập:{" "}
                 {exerciseUrl ? (
-                  <a
-                    href={exerciseUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-[#25B379] underline font-semibold"
-                  >
-                    {lesson?.lessionName || "Tải bài tập"}
-                  </a>
+                  canAccessContent ? (
+                    <a
+                      href={exerciseUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-[#25B379] underline font-semibold"
+                    >
+                      {lesson?.lessionName || "Tải bài tập"}
+                    </a>
+                  ) : (
+                    <span className="text-gray-400 line-through cursor-not-allowed" title="Bạn không có quyền truy cập">
+                      {lesson?.lessionName || "Tải bài tập"}
+                    </span>
+                  )
                 ) : (
                   "Chưa có bài tập"
                 )}
@@ -197,12 +294,15 @@ const VideoLession = () => {
               }}
               curriculumByPart={curriculumByPart}
               curriculumLoading={curriculumLoading}
-              canAccessContent={true}
-              registrationStatus="confirmed"
+              canAccessContent={canAccessContent}
+              registrationStatus={registrationStatus}
               registering={false}
               onRegister={() => {}}
               isLoggedIn={isLoggedIn}
-              onLessonClick={() => {}}
+              onLessonClick={() => {
+                // Handler is already handled by Link navigation
+                // This just ensures the link works properly
+              }}
             />
           </aside>
         </div>

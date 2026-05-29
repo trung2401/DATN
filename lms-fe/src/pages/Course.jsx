@@ -9,6 +9,7 @@ import { getCourseCurriculum, getOpenCourses, registerCourse, getUserRegisteredC
 import ModalWrapper from "../components/ModalWrapper";
 import DetailCourse from "../components/DetailCourse";
 import { getUser } from "../service/userService";
+import { getEffectiveRegistrationStatus } from "../utils/dateUtils";
 
 const fallbackImage =
   "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=1200&q=80";
@@ -86,15 +87,24 @@ const Course = () => {
         const data = response?.data || response || [];
         const registrations = Array.isArray(data) ? data : Array.isArray(data?.data) ? data.data : [];
         
-        // Extract course info from registrations
+        // Extract course info from registrations with duration check
         const coursesList = registrations
           .filter(reg => reg.course && (reg.status === 'pending' || reg.status === 'confirmed'))
-          .map(reg => ({
-            courseId: reg.course.courseId,
-            courseName: reg.course.courseName,
-            registerCourseId: reg.registerCourseId,
-            registrationStatus: reg.status
-          }));
+          .map(reg => {
+            const effectiveStatus = getEffectiveRegistrationStatus(
+              reg.status,
+              reg.date,
+              reg.course?.duration
+            );
+            return {
+              courseId: reg.course.courseId,
+              courseName: reg.course.courseName,
+              registerCourseId: reg.registerCourseId,
+              registrationStatus: effectiveStatus,
+              date: reg.date,
+              duration: reg.course?.duration
+            };
+          });
         
         setRegisteredCourses(coursesList);
       } catch (error) {
@@ -252,7 +262,6 @@ const Course = () => {
                 const courseFromList = courses.find(c => Number(c?.courseId) === Number(reg.courseId));
                 if (!courseFromList) return null;
 
-                const courseId = courseFromList?.courseId ?? "N/A";
                 const courseName = courseFromList?.courseName || "Khóa học TOEIC";
                 const teacherName = courseFromList?.teacherName || "Đội ngũ giảng viên";
                 const imageUrl = resolveImageUrl(courseFromList?.image);
@@ -273,8 +282,14 @@ const Course = () => {
                   >
                     <div className="relative h-48 bg-gray-100">
                       <img src={imageUrl} alt={courseName} className="w-full h-full object-cover" />
-                      <span className="absolute top-2 right-2 bg-[#25B379] text-white text-sm font-semibold px-3 py-1 rounded-sm">
-                        {reg.registrationStatus === 'confirmed' ? 'Đã xác nhận' : 'Chờ xác nhận'}
+                      <span className={`absolute top-2 right-2 text-white text-sm font-semibold px-3 py-1 rounded-sm ${
+                        reg.registrationStatus === 'expired' 
+                          ? 'bg-red-600' 
+                          : reg.registrationStatus === 'confirmed' 
+                            ? 'bg-[#25B379]' 
+                            : 'bg-orange-500'
+                      }`}>
+                        {reg.registrationStatus === 'expired' ? 'Đã quá hạn' : reg.registrationStatus === 'confirmed' ? 'Đã xác nhận' : 'Chờ xác nhận'}
                       </span>
                     </div>
 

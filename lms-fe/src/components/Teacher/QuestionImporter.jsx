@@ -20,7 +20,7 @@ export default function QuestionImporter({ show, onClose, testId, partId, onDone
   const [responseMsg, setResponseMsg] = useState('');
   const [importing, setImporting] = useState(false);
   const [logs, setLogs] = useState([]);
-  const [progress, setProgress] = useState({ done: 0, total: 0 });
+  const [progress] = useState({ done: 0, total: 0 });
   const fileRef = useRef();
 
   const addLog = useCallback((msg, type = 'info') => {
