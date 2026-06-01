@@ -53,6 +53,38 @@ const Dashboard = () => {
     }));
   }, [revenue]);
 
+  const { totalProfit, totalTransactionAmount, totalTeacherPayout } = useMemo(() => {
+    const rows = Array.isArray(transactions) ? transactions : [];
+    const confirmed = rows.filter((r) => (r.status || "") === "confirmed" || (r.status || "") === "confirned");
+    const totals = confirmed.reduce(
+      (acc, t) => {
+        const total = Number(t.totalAmount ?? t.amount ?? 0);
+        const teacher = Number(t.totalAmountOfTeacher ?? 0);
+        acc.totalTransactionAmount += total;
+        acc.totalTeacherPayout += teacher;
+        acc.totalProfit += total - teacher;
+        return acc;
+      },
+      { totalTransactionAmount: 0, totalTeacherPayout: 0, totalProfit: 0 }
+    );
+
+    return {
+      totalProfit: totals.totalProfit,
+      totalTransactionAmount: totals.totalTransactionAmount,
+      totalTeacherPayout: totals.totalTeacherPayout,
+    };
+  }, [transactions]);
+
+  // debug totals to ensure consistency between revenue API and transactions
+  if (typeof console !== "undefined" && console.debug) {
+    console.debug("Revenue debug:", {
+      revenueTotal: revenue?.totalAmount,
+      totalTransactionAmount,
+      totalTeacherPayout,
+      totalProfit,
+    });
+  }
+
   const handleFilterRevenue = () => {
     dispatch(fetchRevenue({ startDate: revenueStartDate, endDate: revenueEndDate }));
   };
@@ -84,7 +116,7 @@ const Dashboard = () => {
             Đang tải dữ liệu...
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 justify-items-center items-center">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 lg:gap-12 justify-items-center items-center">
             <StatisticsCard
               icon={
                 <FontAwesomeIcon
@@ -95,6 +127,7 @@ const Dashboard = () => {
               }
               value={numberOfTests}
               description="Số lượng đề thi"
+              compact
             />
             <StatisticsCard
               icon={
@@ -106,6 +139,19 @@ const Dashboard = () => {
               }
               value={formatCurrency(revenue.totalAmount)}
               description="Doanh thu"
+              compact
+            />
+            <StatisticsCard
+              icon={
+                <FontAwesomeIcon
+                  icon="fa-solid fa-coins"
+                  size="4x"
+                  style={{ color: "#25B379" }}
+                />
+              }
+              value={formatCurrency(totalProfit)}
+              description="Doanh thu sau chiết khấu"
+              compact
             />
             <StatisticsCard
               icon={
@@ -117,6 +163,7 @@ const Dashboard = () => {
               }
               value={numberOfUsers}
               description="Người dùng"
+              compact
             />
           </div>
         )}
