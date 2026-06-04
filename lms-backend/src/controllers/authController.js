@@ -25,11 +25,11 @@ const login = async (req, res) => {
         });
 
         if (!user) {
-            return res.status(404).json({ message: 'Account not found!' });
+            return res.status(404).json({ message: 'Tài khoản không tồn tại!' });
         }
 
         if (Number(user.status) === 0) {
-            return res.status(403).json({ message: 'Account is locked!' });
+            return res.status(403).json({ message: 'Tài khoản đã bị khóa!' });
         }
 
         const isMatch = hashMD5(password) === user.Password;
@@ -37,7 +37,7 @@ const login = async (req, res) => {
         console.log("MD5 Input:", hashMD5(password));
         console.log("DB Password:", user.Password);
         if (!isMatch) {
-            return res.status(400).json({ message: 'Incorrect password!' });
+            return res.status(400).json({ message: 'Mật khẩu không chính xác!' });
             
         }
 
@@ -52,7 +52,7 @@ const login = async (req, res) => {
         await user.update({ RefreshToken: refreshToken });
 
         return res.json({
-            message: 'Login successful!',
+            message: 'Đăng nhập thành công!',
             accessToken,
             refreshToken,
             user: new UserDTO(user)
@@ -71,7 +71,7 @@ const handleRefreshToken = async (req, res) => {
 
         jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET, async (err, decoded) => {
             if (err) {
-                return res.status(403).json({ message: 'Refresh token expired!' });
+                return res.status(403).json({ message: 'Refresh token hết hạn!' });
             }
 
             const user = await User.findByPk(decoded.id, {
@@ -79,7 +79,7 @@ const handleRefreshToken = async (req, res) => {
             });
 
             if (!user) {
-                return res.status(404).json({ message: 'User not found!' });
+                return res.status(404).json({ message: 'Không tìm thấy người dùng!' });
             }
 
             const newAccessToken = generateAccessToken(user);
@@ -105,7 +105,7 @@ const register = async (req, res) => {
 
         const userExists = await User.findOne({ where: { UserName: userName } });
         if (userExists) {
-            return res.status(400).json({ message: 'Account already exists!' });
+            return res.status(400).json({ message: 'Tên đăng nhập đã tồn tại!' });
         }
 
         const newUser = await User.create({
@@ -129,11 +129,11 @@ const register = async (req, res) => {
         });
 
         return res.status(201).json({
-            message: 'Registration successful!',
+            message: 'Đăng ký thành công!',
             user: new UserDTO(userWithRole)
         });
     } catch (error) {
-        return res.status(500).json({ message: 'Server error during registration!', error: error.message });
+        return res.status(500).json({ message: 'Đã xảy ra lỗi trong quá trình đăng ký!', error: error.message });
     }
 };
 

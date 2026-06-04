@@ -47,7 +47,7 @@ const Register = () => {
         }
       } catch (error) {
         console.error("Signup Error:", error);
-        const message =
+        let message =
           error.response?.data?.message ||
           "Đã xảy ra lỗi khi đăng ký. Vui lòng thử lại.";
         toast.error(message);
