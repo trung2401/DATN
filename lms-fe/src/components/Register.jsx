@@ -58,13 +58,13 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex justify-center mb-10">
+    <div className="min-h-screen flex justify-center items-start px-4 pt-8 pb-6">
       <form
         onSubmit={(e) => {
           e.preventDefault();
           handleSignup();
         }}
-        className="mt-10 space-y-6 w-full max-w-md p-8 border-2 border-gray-200 bg-white shadow-md rounded-lg"
+        className="space-y-6 w-full max-w-md p-8 border-2 border-gray-200 bg-white shadow-md rounded-lg"
       >
         {/* Header */}
         <div className="flex items-center justify-center mb-7">
@@ -83,11 +83,10 @@ const Register = () => {
               value={formData.userName}
               onChange={handleChange}
               placeholder="Nhập tên đăng nhập"
-              className={`w-full text-[#2C8F5F] font-medium px-4 py-2.5 placeholder-[#2C8F5F] border ${
-                errors.userName
+              className={`w-full text-[#2C8F5F] font-medium px-4 py-2.5 placeholder-[#2C8F5F] border ${errors.userName
                   ? "border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
                   : "border-[#D0E8DF]"
-              } rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4AB88A]`}
+                } rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4AB88A]`}
             />
             {errors.userName && (
               <div className="text-sm text-red-500 font-medium">
@@ -107,11 +106,10 @@ const Register = () => {
               value={formData.email}
               onChange={handleChange}
               placeholder="Nhập email"
-              className={`w-full text-[#2C8F5F] font-medium px-4 py-2.5 placeholder-[#2C8F5F] border ${
-                errors.email
+              className={`w-full text-[#2C8F5F] font-medium px-4 py-2.5 placeholder-[#2C8F5F] border ${errors.email
                   ? "border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
                   : "border-[#D0E8DF]"
-              } rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4AB88A]`}
+                } rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4AB88A]`}
             />
             {errors.email && (
               <div className="text-sm text-red-500 font-medium">
@@ -132,11 +130,10 @@ const Register = () => {
                 value={formData.password}
                 onChange={handleChange}
                 placeholder="Nhập ít nhất 8 ký tự"
-                className={`w-full px-4 py-2.5 text-[#2C8F5F] font-medium placeholder-[#2C8F5F] border ${
-                  errors.password
+                className={`w-full px-4 py-2.5 text-[#2C8F5F] font-medium placeholder-[#2C8F5F] border ${errors.password
                     ? "border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
                     : "border-[#D0E8DF]"
-                } rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4AB88A]`}
+                  } rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4AB88A]`}
               />
               <span
                 className="absolute right-4 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500"
@@ -168,11 +165,10 @@ const Register = () => {
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 placeholder="Nhập mật khẩu xác nhận"
-                className={`w-full px-4 py-2.5 text-[#2C8F5F] font-medium placeholder-[#2C8F5F] border ${
-                  errors.confirmPassword
+                className={`w-full px-4 py-2.5 text-[#2C8F5F] font-medium placeholder-[#2C8F5F] border ${errors.confirmPassword
                     ? "border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
                     : "border-[#D0E8DF]"
-                } rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4AB88A]`}
+                  } rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4AB88A]`}
               />
               <span
                 className="absolute right-4 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500"

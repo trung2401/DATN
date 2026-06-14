@@ -351,6 +351,8 @@ export const fetchTransaction = createAsyncThunk(
         totalAmountOfTeacher: Number(item.totalAmountOfTeacher || 0),
         date: item.date,
         confirmDate: item.confirmDate,
+        paidAmount: Number(item.paidAmount || 0),
+        paidAt: item.paidAt,
         status: item.status || "pending",
       }));
     } catch (error) {

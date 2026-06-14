@@ -4,6 +4,9 @@ const registerCourseController = require('../controllers/registerCourseControlle
 const { verifyToken, isAdmin } = require('../middlewares/authMiddleware');
 
 router.post('/add', verifyToken, registerCourseController.createRegisterCourse);
+router.post('/webhook/sepay', registerCourseController.receiveSepayWebhook);
+router.get('/preview-payment', verifyToken, registerCourseController.getRegisterCoursePaymentPreview);
+router.get('/:id/payment-qr', verifyToken, registerCourseController.getRegisterCoursePaymentQR);
 router.put('/:id/confirm', verifyToken, isAdmin, registerCourseController.updateRegisterCourseStatusConfirmed);
 router.put('/:id/cancel', verifyToken, isAdmin, registerCourseController.updateRegisterCourseStatusCancel);
 router.get('/getAll', verifyToken, registerCourseController.getAllRegisterCourses);

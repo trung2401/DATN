@@ -10,9 +10,14 @@ const getCourseCurriculum = ({ courseId }) => {
   return axios.get(URL_BACKEND);
 };
 
-const registerCourse = ({ courseId, totalAmount }) => {
+const getRegisterCoursePaymentPreview = ({ courseId }) => {
+  const URL_BACKEND = `register-course/preview-payment?courseId=${courseId}`;
+  return axios.get(URL_BACKEND);
+};
+
+const registerCourse = ({ courseId, totalAmount, paymentCode }) => {
   const URL_BACKEND = "register-course/add";
-  return axios.post(URL_BACKEND, { courseId, totalAmount });
+  return axios.post(URL_BACKEND, { courseId, totalAmount, paymentCode });
 };
 
 const getVocabularyByList = ({ listId }) => {
@@ -30,4 +35,4 @@ const getUserRegisteredCourses = () => {
   return axios.get(URL_BACKEND);
 };
 
-export { getOpenCourses, getCourseCurriculum, registerCourse, getVocabularyByList, getVocabularyListInfo, getUserRegisteredCourses };
+export { getOpenCourses, getCourseCurriculum, getRegisterCoursePaymentPreview, registerCourse, getVocabularyByList, getVocabularyListInfo, getUserRegisteredCourses };

@@ -93,11 +93,21 @@ const Dashboard = () => {
   const [currentPageExams, setCurrentPageExams] = useState(1);
   const itemsPerPage = 5;
 
-  const totalPayments = transactions.length;
+  const recentPayments = useMemo(
+    () =>
+      (Array.isArray(transactions) ? transactions : []).filter((payment) => {
+        const paidAmount = Number(payment.paidAmount ?? 0);
+        const totalAmount = Number(payment.totalAmount ?? 0);
+        return paidAmount > 0 && paidAmount === totalAmount;
+      }),
+    [transactions]
+  );
+
+  const totalPayments = recentPayments.length;
   const totalPaymentPages = Math.ceil(totalPayments / itemsPerPage);
   const startIndexPayments = (currentPagePayments - 1) * itemsPerPage;
   const endIndexPayments = startIndexPayments + itemsPerPage;
-  const currentPayments = transactions.slice(
+  const currentPayments = recentPayments.slice(
     startIndexPayments,
     endIndexPayments
   );
@@ -249,8 +259,9 @@ const Dashboard = () => {
                   <tr className="text-black font-bold">
                     <th className="py-3 px-4">ID Khóa học</th>
                     <th className="py-3 px-4">Tên người dùng</th>
-                    <th className="py-3 px-4">Thành tiền</th>
-                    <th className="py-3 px-4">Ngày đăng ký</th>
+                    <th className="py-3 px-4">Số tiền</th>
+                    <th className="py-3 px-4">Tiền vào</th>
+                    <th className="py-3 px-4">Ngày thanh toán</th>
                     <th className="py-3 px-4">Trạng thái</th>
                   </tr>
                 </thead>
@@ -264,17 +275,20 @@ const Dashboard = () => {
                         {payment.userName}
                       </td>
                       <td className="px-4 py-2 font-bold text-[#25B379]">
-                        {formatCurrency(payment.amount)}
+                        {formatCurrency(payment.totalAmount)}
+                      </td>
+                      <td className="px-4 py-2 font-bold text-[#25B379]">
+                        {payment.paidAmount > 0 ? formatCurrency(payment.paidAmount) : "-"}
                       </td>
                       <td className="px-4 py-2 text-gray-600 font-semibold">
                         {formatDate(payment.date)}
                       </td>
                       <td className="px-4 py-2 font-semibold">
-                        {payment.status === "confirmed" || payment.status === "confirned"
+                        {payment.status === "confirmed"
                           ? "Đã xác nhận"
-                          : payment.status === "cancel"
-                            ? "Đã hủy bỏ"
-                            : "Chờ xác nhận"}
+                          : payment.status === "pending"
+                            ? "Chờ xác nhận"
+                            : "Đã hủy bỏ"}
                       </td>
                     </tr>
                   ))}

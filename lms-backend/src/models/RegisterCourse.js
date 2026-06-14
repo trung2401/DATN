@@ -49,6 +49,27 @@ const RegisterCourse = sequelize.define('RegisterCourse', {
         type: DataTypes.STRING(45),
         allowNull: true,
         field: 'status'
+    },
+    payment_code: {
+        type: DataTypes.STRING(50),
+        allowNull: true,
+        unique: true,
+        field: 'payment_code'
+    },
+    paid_amount: {
+        type: DataTypes.DOUBLE,
+        allowNull: true,
+        field: 'paid_amount'
+    },
+    sepay_transaction_id: {
+        type: DataTypes.STRING(100),
+        allowNull: true,
+        field: 'sepay_transaction_id'
+    },
+    paid_at: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        field: 'paid_at'
     }
 }, {
     tableName: 'register_course'

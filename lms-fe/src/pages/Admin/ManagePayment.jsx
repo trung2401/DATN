@@ -32,7 +32,7 @@ const ManagePayment = () => {
     dispatch(fetchTransaction());
   }, [dispatch]);
 
-  
+
 
   const [currentPagePayments, setCurrentPagePayments] = useState(1);
   const [searchQueryPayments, setSearchQueryPayments] = useState("");
@@ -41,6 +41,12 @@ const ManagePayment = () => {
 
   // Search payment
   const filteredPayments = transactions.filter((payment) => {
+    const paidAmount = Number(payment.paidAmount ?? 0);
+    const totalAmount = Number(payment.totalAmount ?? 0);
+    if (!(paidAmount > 0 && paidAmount === totalAmount)) {
+      return false;
+    }
+
     const userId = String(payment.userId ?? "");
     const courseId = String(payment.courseId ?? "");
     const userName = String(payment.userName ?? "");
@@ -89,23 +95,7 @@ const ManagePayment = () => {
     }
   };
 
-  const handleCancel = async (registerCourseId) => {
-    if (!registerCourseId) return;
 
-    try {
-      setProcessingId(registerCourseId);
-      await dispatch(fetchCancelRegisterCourse({ registerCourseId })).unwrap();
-      await dispatch(fetchTransaction()).unwrap();
-      await dispatch(fetchRevenue()).unwrap();
-      toast.success("Hủy giao dịch thành công");
-    } catch (error) {
-      toast.error(error || "Hủy giao dịch thất bại");
-    } finally {
-      setProcessingId(null);
-    }
-  };
-
- 
 
   return (
     <main className="max-w-[92rem] w-full mx-auto space-y-6 p-4">
@@ -160,49 +150,42 @@ const ManagePayment = () => {
         ) : (
           <>
             <div className="w-full overflow-x-auto">
-            <table className="w-full min-w-[1200px] text-center border-2 border-gray-300 rounded-2xl overflow-hidden border-separate border-spacing-0">
-              <thead className="bg-gray-200">
-                <tr className="text-black font-bold">
-                  <th className="py-3 px-4">ID học viên</th>
-                  <th className="py-3 px-4">Tên người dùng</th>
-                  <th className="py-3 px-4">ID khóa học</th>
-                  <th className="py-3 px-4">Số tiền</th>
-                  <th className="py-3 px-4">Tiền trả GV</th>
-                  <th className="py-3 px-4">Ngày đăng ký</th>
-                  <th className="py-3 px-4">Ngày xác nhận</th>
-                  <th className="py-3 px-4">Trạng Thái</th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentPayments.length > 0 ? (
-                  currentPayments.map((payment) => (
-                    <tr key={payment.registerCourseId ?? `${payment.id}-${payment.date}`} className="hover:bg-gray-100">
-                      <td className="px-4 py-4 text-gray-600 font-semibold">
-                        {payment.userId ?? "N/A"}
-                      </td>
-                      <td className="px-4 py-4 text-gray-600 font-semibold">
-                        {payment.userName ?? "N/A"}
-                      </td>
-                      <td className="px-4 py-4 text-gray-600 font-semibold">
-                        {payment.courseId ?? "N/A"}
-                      </td>
-                      <td className="px-4 py-4 font-bold text-[#25B379]">
-                        {formatCurrency(payment.totalAmount)}
-                      </td>
-                      <td className="px-4 py-4 font-bold text-[#25B379]">
-                        {formatCurrency(payment.totalAmountOfTeacher)}
-                      </td>
-                      <td className="px-4 py-4 text-gray-600 font-semibold">
-                        {formatDate(payment.date)}
-                      </td>
-                      <td className="px-4 py-4 text-gray-600 font-semibold">
-                        {payment.confirmDate
-                          ? formatDate(payment.confirmDate)
-                          : "Chờ xác nhận"}
-                      </td>
-                      <td className="px-4 py-4 text-gray-600 font-semibold">
-                        {payment.status === "pending" ? (
-                          <div className="flex items-center justify-center gap-2">
+              <table className="w-full min-w-[1100px] text-center border-2 border-gray-300 rounded-2xl overflow-hidden border-separate border-spacing-0">
+                <thead className="bg-gray-200">
+                  <tr className="text-black font-bold">
+                    <th className="py-3 px-4">ID học viên</th>
+                    <th className="py-3 px-4">ID khóa học</th>
+                    <th className="py-3 px-4">Số tiền</th>
+                    <th className="py-3 px-4">Tiền trả GV</th>
+                    <th className="py-3 px-4">Tiền vào</th>
+                    <th className="py-3 px-4">Ngày thanh toán</th>
+                    <th className="py-3 px-4">Trạng Thái</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {currentPayments.length > 0 ? (
+                    currentPayments.map((payment) => (
+                      <tr key={payment.registerCourseId ?? `${payment.id}-${payment.date}`} className="hover:bg-gray-100">
+                        <td className="px-4 py-4 text-gray-600 font-semibold">
+                          {payment.userId ?? "N/A"}
+                        </td>
+                        <td className="px-4 py-4 text-gray-600 font-semibold">
+                          {payment.courseId ?? "N/A"}
+                        </td>
+                        <td className="px-4 py-4 font-bold text-[#25B379]">
+                          {formatCurrency(payment.totalAmount)}
+                        </td>
+                        <td className="px-4 py-4 font-bold text-[#25B379]">
+                          {formatCurrency(payment.totalAmountOfTeacher)}
+                        </td>
+                        <td className="px-4 py-4 text-gray-600 font-semibold">
+                          {payment.paidAmount > 0 ? formatCurrency(payment.paidAmount) : "-"}
+                        </td>
+                        <td className="px-4 py-4 text-gray-600 font-semibold">
+                          {payment.paidAt ? formatDate(payment.paidAt) : "-"}
+                        </td>
+                        <td className="px-4 py-4 text-gray-600 font-semibold">
+                          {payment.status === "pending" ? (
                             <Button
                               text="Xác nhận"
                               variant="primary"
@@ -210,42 +193,26 @@ const ManagePayment = () => {
                               disabled={processingId === payment.registerCourseId}
                               onClick={() => handleConfirm(payment.registerCourseId)}
                             />
-                            <Button
-                              text="Hủy"
-                              variant="delete"
-                              size="sm"
-                              disabled={processingId === payment.registerCourseId}
-                              onClick={() => handleCancel(payment.registerCourseId)}
-                            />
-                          </div>
-                        ) : (
-                          <span
-                            className={`font-semibold ${
-                              payment.status === "confirmed"
-                                ? "text-green-600"
-                                : "text-red-600"
-                            }`}
-                          >
-                            {payment.status === "confirmed"
-                              ? "Đã xác nhận"
-                              : "Đã hủy"}
-                          </span>
-                        )}
+                          ) : payment.status === "confirmed" ? (
+                            <span className="font-semibold text-green-600">Đã xác nhận</span>
+                          ) : (
+                            <span className="font-semibold text-red-600">Đã hủy</span>
+                          )}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td
+                        colSpan="7"
+                        className="py-4 text-gray-600 font-semibold"
+                      >
+                        Không tìm thấy giao dịch phù hợp
                       </td>
                     </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td
-                      colSpan="8"
-                      className="py-4 text-gray-600 font-semibold"
-                    >
-                      Không tìm thấy giao dịch phù hợp
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+                  )}
+                </tbody>
+              </table>
             </div>
             {totalPayments > 0 && (
               <div className="flex justify-between items-center p-4">

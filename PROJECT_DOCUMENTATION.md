@@ -19,6 +19,28 @@ Purpose: This document summarizes the main features of the project, the backend 
 
 ---
 
+**1.1. Logical architecture diagram**
+
+```mermaid
+flowchart LR
+  U[Người dùng\nHọc viên / Giáo viên]
+  FE[ReactJS\nFrontend]
+  BE[ExpressJS Backend\nNodeJS]
+  DB[(MySQL\nDatabase)]
+  CHAT[Chat Service\nREST + Socket.IO]
+  SEPAY[SePay\nWebhook / Payment]
+
+  U -->|HTTP / HTTPS| FE
+  FE -->|REST API| BE
+  BE -->|Read / Write| DB
+  BE -->|WebSocket| CHAT
+  CHAT -->|Realtime events| FE
+  BE -->|Webhook| SEPAY
+  SEPAY -->|Payment confirmation| BE
+```
+
+---
+
 **2. Backend routes (summary) and controllers**
 
 Files under `lms-backend/src/routes` map to controller functions under `lms-backend/src/controllers`.
